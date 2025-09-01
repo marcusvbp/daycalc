@@ -20,5 +20,12 @@
   "appearance": "Appearance",
   "theme": "Theme",
   "language": "Language",
-  "selectLanguage": "Select language"
+  "selectLanguage": "Select language",
+  "sunday": "Sun",
+  "monday": "Mon",
+  "tuesday": "Tue",
+  "wednesday": "Wed",
+  "thursday": "Thu",
+  "friday": "Fri",
+  "saturday": "Sat"
 }

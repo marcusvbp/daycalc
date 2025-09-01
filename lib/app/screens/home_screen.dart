@@ -89,14 +89,14 @@ class HomeScreen extends ConsumerWidget {
                   ).colorScheme.primary,
                   centerAlignModePicker: true,
                   firstDayOfWeek: 1, // Segunda-feira como primeiro dia
-                  weekdayLabels: const [
-                    'Dom',
-                    'Seg',
-                    'Ter',
-                    'Qua',
-                    'Qui',
-                    'Sex',
-                    'Sáb',
+                  weekdayLabels: [
+                    localizations.sunday,
+                    localizations.monday,
+                    localizations.tuesday,
+                    localizations.wednesday,
+                    localizations.thursday,
+                    localizations.friday,
+                    localizations.saturday,
                   ],
                 ),
                 value: userDate != null ? [userDate] : [],

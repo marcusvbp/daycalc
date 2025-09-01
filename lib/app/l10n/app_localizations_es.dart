@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -51,4 +52,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Seleccionar idioma';
+
+  @override
+  String get sunday => 'Dom';
+
+  @override
+  String get monday => 'Lun';
+
+  @override
+  String get tuesday => 'Mar';
+
+  @override
+  String get wednesday => 'Mié';
+
+  @override
+  String get thursday => 'Jue';
+
+  @override
+  String get friday => 'Vie';
+
+  @override
+  String get saturday => 'Sáb';
 }
