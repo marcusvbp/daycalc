@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  "appTitle": "DayCalc",
+  "welcome": "Welcome to DayCalc!",
+  "counter": "Counter: {count}",
+  "@counter": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "changeTheme": "Change theme",
+  "chooseTheme": "Choose theme",
+  "lightTheme": "Light",
+  "darkTheme": "Dark",
+  "systemTheme": "System",
+  "close": "Close",
+  "settings": "Settings",
+  "appearance": "Appearance",
+  "theme": "Theme",
+  "language": "Language",
+  "selectLanguage": "Select language"
+}
