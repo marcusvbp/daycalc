@@ -34,11 +34,9 @@ class HomeScreen extends ConsumerWidget {
           spacing: 16,
           children: [
             Text(
-              'Selecione uma data:',
+              localizations.selectDate,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
-            const SizedBox(height: 16),
-
             // Data selecionada
             if (userDate != null)
               Container(
@@ -48,29 +46,28 @@ class HomeScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
+                  spacing: 8,
                   children: [
                     Icon(
                       Icons.calendar_today,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Data selecionada: ${ref.read(userDateProvider.notifier).getFormattedDate('pt_BR')}',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    Expanded(
+                      child: Text(
+                        'Data selecionada: ${ref.read(userDateProvider.notifier).getFormattedDate('pt_BR')}',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        ref.read(userDateProvider.notifier).clear();
+                      },
+                      icon: const Icon(Icons.clear),
                     ),
                   ],
                 ),
               ),
 
-            // Botão para limpar a data
-            if (userDate != null)
-              OutlinedButton.icon(
-                onPressed: () {
-                  ref.read(userDateProvider.notifier).clear();
-                },
-                icon: const Icon(Icons.clear),
-                label: const Text('Limpar Data'),
-              ),
             // Calendário embutido
             Container(
               decoration: BoxDecoration(
