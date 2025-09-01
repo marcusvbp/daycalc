@@ -27,5 +27,6 @@
   "wednesday": "Wed",
   "thursday": "Thu",
   "friday": "Fri",
-  "saturday": "Sat"
+  "saturday": "Sat",
+  "selectDate": "Select date"
 }

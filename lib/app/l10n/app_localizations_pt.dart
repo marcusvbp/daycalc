@@ -73,4 +73,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get saturday => 'Sáb';
+
+  @override
+  String get selectDate => 'Selecione uma data';
 }

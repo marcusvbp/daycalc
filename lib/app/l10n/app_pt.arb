@@ -27,5 +27,6 @@
   "wednesday": "Qua",
   "thursday": "Qui",
   "friday": "Sex",
-  "saturday": "Sáb"
+  "saturday": "Sáb",
+  "selectDate": "Selecione uma data"
 }

@@ -27,5 +27,6 @@
   "wednesday": "Mié",
   "thursday": "Jue",
   "friday": "Vie",
-  "saturday": "Sáb"
+  "saturday": "Sáb",
+  "selectDate": "Seleccionar fecha"
 }
