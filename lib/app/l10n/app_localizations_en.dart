@@ -76,4 +76,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectDate => 'Select date';
+
+  @override
+  String get dataOperations => 'Date Operations';
+
+  @override
+  String get number => 'Number';
+
+  @override
+  String get unit => 'Unit';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get subtract => 'Subtract';
+
+  @override
+  String get hours => 'Hours';
+
+  @override
+  String get days => 'Days';
+
+  @override
+  String get weeks => 'Weeks';
+
+  @override
+  String get months => 'Months';
+
+  @override
+  String get years => 'Years';
+
+  @override
+  String get calculate => 'Calculate';
+
+  @override
+  String get selectedDate => 'Selected date';
 }

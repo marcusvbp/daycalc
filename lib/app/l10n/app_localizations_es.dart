@@ -76,4 +76,40 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get selectDate => 'Seleccionar fecha';
+
+  @override
+  String get dataOperations => 'Operaciones de Fecha';
+
+  @override
+  String get number => 'Número';
+
+  @override
+  String get unit => 'Unidad';
+
+  @override
+  String get add => 'Agregar';
+
+  @override
+  String get subtract => 'Restar';
+
+  @override
+  String get hours => 'Horas';
+
+  @override
+  String get days => 'Días';
+
+  @override
+  String get weeks => 'Semanas';
+
+  @override
+  String get months => 'Meses';
+
+  @override
+  String get years => 'Años';
+
+  @override
+  String get calculate => 'Calcular';
+
+  @override
+  String get selectedDate => 'Fecha seleccionada';
 }
