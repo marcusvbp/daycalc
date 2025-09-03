@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-enum TimeUnit { hours, days, weeks, months, years }
+enum TimeUnit { hours, days, weeks, months }
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -60,13 +60,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           notifier.subtractMonths(number);
         }
         break;
-      case TimeUnit.years:
-        if (operationType == OperationType.add) {
-          notifier.addYears(number);
-        } else {
-          notifier.subtractYears(number);
-        }
-        break;
     }
   }
 
@@ -80,8 +73,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return localizations.weeks;
       case TimeUnit.months:
         return localizations.months;
-      case TimeUnit.years:
-        return localizations.years;
     }
   }
 
@@ -89,6 +80,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final userDate = ref.watch(userDateProvider);
     final localizations = AppLocalizations.of(context)!;
+    final dateOperations = ref.watch(dateOperationsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -203,7 +195,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       tooltip: localizations.subtract,
                     ),
                   ],
-                  selected: {ref.watch(dateOperationsProvider).operationType},
+                  selected: {dateOperations.operationType},
                   onSelectionChanged: (Set<OperationType> newSelection) {
                     ref
                         .read(dateOperationsProvider.notifier)
@@ -246,13 +238,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         setState(() {
                           _selectedTimeUnit = newValue;
                         });
-                        _updateTimeValue(ref, _currentNumber);
                       }
                     },
                   ),
                 ),
                 IconButton(
-                  onPressed: _currentNumber != 0 ? () {} : null,
+                  onPressed: _currentNumber != 0
+                      ? () {
+                          _updateTimeValue(ref, _currentNumber);
+                        }
+                      : null,
                   icon: Icon(Icons.calculate),
                   tooltip: localizations.calculate,
                   color: Theme.of(context).colorScheme.onPrimary,
@@ -262,10 +257,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-
             // Exibição do resultado formatado
-            if (ref.watch(dateOperationsProvider).totalHours > 0)
+            if (dateOperations.totalHours > 0)
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -288,7 +281,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
-            Row(),
           ],
         ),
       ),
