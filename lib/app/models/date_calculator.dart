@@ -1,80 +1,84 @@
-enum OperationType { addition, subtraction }
+import 'package:daycalc/app/enums/operation_type.dart';
 
 class DateCalculator {
   final DateTime date;
   final int hours;
   final OperationType operationType;
+  final String languageCode;
 
   DateCalculator({
     required this.date,
     required this.hours,
     required this.operationType,
+    required this.languageCode,
   });
 
   DateTime get calculatedDate {
     final duration = Duration(hours: hours);
 
     switch (operationType) {
-      case OperationType.addition:
+      case OperationType.add:
         return date.add(duration);
-      case OperationType.subtraction:
+      case OperationType.subtract:
         return date.subtract(duration);
     }
   }
 
-  String getFormattedDate(String languageCode) {
+  String get formattedDate {
     final calculatedDateTime = calculatedDate;
-    final weekDay = getWeekDayName(languageCode);
+    final weekDay = weekDayName;
     final day = calculatedDateTime.day;
-    final month = _getMonthName(languageCode, calculatedDateTime.month);
+    final month = monthName;
     final year = calculatedDateTime.year;
 
-    switch (languageCode.toLowerCase()) {
+    switch (languageCode) {
       case 'pt':
-      case 'pt-br':
+      case 'pt_BR':
         return '$weekDay, $day de $month de $year';
       case 'en':
-      case 'en-us':
+      case 'en_US':
         return '$weekDay, $month $day, $year';
       case 'es':
-      case 'es-es':
+      case 'es_ES':
         return '$weekDay, $day de $month de $year';
       default:
         return '$weekDay, $month $day, $year';
     }
   }
 
-  String getWeekDayName(String languageCode) {
+  String get weekDayName {
     final calculatedDateTime = calculatedDate;
 
-    switch (languageCode.toLowerCase()) {
+    switch (languageCode) {
       case 'pt':
-      case 'pt-br':
+      case 'pt_BR':
         return _getPortugueseWeekDay(calculatedDateTime.weekday);
       case 'en':
-      case 'en-us':
+      case 'en_US':
         return _getEnglishWeekDay(calculatedDateTime.weekday);
       case 'es':
-      case 'es-es':
+      case 'es_ES':
         return _getSpanishWeekDay(calculatedDateTime.weekday);
       default:
         return _getEnglishWeekDay(calculatedDateTime.weekday);
     }
   }
 
-  String _getMonthName(String languageCode, int month) {
-    switch (languageCode.toLowerCase()) {
+  String get monthName {
+    final calculatedDateTime = calculatedDate;
+
+    switch (languageCode) {
       case 'pt':
-      case 'pt-br':
-        return _getPortugueseMonth(month);
+      case 'pt_BR':
+        return _getPortugueseMonth(calculatedDateTime.month);
       case 'en':
-      case 'en-us':
-        return _getEnglishMonth(month);
+      case 'en_US':
+        return _getEnglishMonth(calculatedDateTime.month);
       case 'es':
-      case 'es-es':
-        return _getSpanishMonth(month);
+      case 'es_ES':
+        return _getSpanishMonth(calculatedDateTime.month);
       default:
-        return _getEnglishMonth(month);
+        return _getEnglishMonth(calculatedDateTime.month);
     }
   }
 

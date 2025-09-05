@@ -1,8 +1,7 @@
+import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'date_operations_provider.g.dart';
-
-enum OperationType { add, subtract }
 
 @riverpod
 class DateOperations extends _$DateOperations {
@@ -121,7 +120,7 @@ class DateOperations extends _$DateOperations {
 
   // Métodos para limpar e resetar
   void clear() {
-    state = const DateOperationsState();
+    state = DateOperationsState(operationType: state.operationType);
   }
 
   void reset() {

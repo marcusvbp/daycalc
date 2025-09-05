@@ -1,5 +1,7 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
+import 'package:daycalc/app/models/date_calculator.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   TimeUnit _selectedTimeUnit = TimeUnit.days;
   int _currentNumber = 0;
+  bool isCalculated = false;
+  DateCalculator? _dateCalculator;
 
   void _updateTimeValue(WidgetRef ref, int number) {
     setState(() {
@@ -25,7 +29,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
 
     final notifier = ref.read(dateOperationsProvider.notifier);
-    final operationType = ref.read(dateOperationsProvider).operationType;
+    final dateOperations = ref.watch(dateOperationsProvider);
+    final operationType = dateOperations.operationType;
 
     // Limpar valores anteriores
     notifier.clear();
@@ -76,6 +81,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  Widget _makeLabel(String? label, String value) => Text.rich(
+    TextSpan(
+      children: [
+        if (label != null)
+          TextSpan(
+            text: '$label: ',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        TextSpan(text: value),
+      ],
+      style: Theme.of(context).textTheme.bodyLarge,
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final userDate = ref.watch(userDateProvider);
@@ -96,7 +115,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,6 +156,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 value: userDate != null ? [userDate] : [],
                 onValueChanged: (dates) {
                   if (dates.isNotEmpty) {
+                    setState(() {
+                      isCalculated = false;
+                      _dateCalculator = null;
+                    });
                     ref.read(userDateProvider.notifier).add(dates.first);
                   }
                 },
@@ -166,6 +189,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     IconButton(
                       onPressed: () {
                         ref.read(userDateProvider.notifier).clear();
+                        setState(() {
+                          _dateCalculator = null;
+                          isCalculated = false;
+                        });
                       },
                       icon: const Icon(Icons.clear),
                     ),
@@ -197,6 +224,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                   selected: {dateOperations.operationType},
                   onSelectionChanged: (Set<OperationType> newSelection) {
+                    setState(() {
+                      _dateCalculator = null;
+                      isCalculated = false;
+                    });
                     ref
                         .read(dateOperationsProvider.notifier)
                         .setOperationType(newSelection.first);
@@ -237,15 +268,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       if (newValue != null) {
                         setState(() {
                           _selectedTimeUnit = newValue;
+                          _dateCalculator = null;
+                          isCalculated = false;
                         });
                       }
                     },
                   ),
                 ),
                 IconButton(
-                  onPressed: _currentNumber != 0
-                      ? () {
+                  onPressed: _currentNumber != 0 && userDate != null
+                      ? () async {
                           _updateTimeValue(ref, _currentNumber);
+                          final dtOp = ref.read(dateOperationsProvider);
+                          setState(() {
+                            isCalculated = true;
+                            _dateCalculator = DateCalculator(
+                              date: userDate,
+                              hours: dtOp.totalHours,
+                              operationType: dtOp.operationType,
+                              languageCode: AppLocalizations.of(
+                                context,
+                              )!.localeName,
+                            );
+                          });
                         }
                       : null,
                   icon: Icon(Icons.calculate),
@@ -258,7 +303,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
             // Exibição do resultado formatado
-            if (dateOperations.totalHours > 0)
+            if (isCalculated)
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -266,16 +311,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
+                  spacing: 12,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
                       Icons.access_time,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
-                    const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        'Total: ${ref.read(dateOperationsProvider.notifier).formatHoursToString()}',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _makeLabel(
+                            'Data Final',
+                            _dateCalculator!.formattedDate,
+                          ),
+                          _makeLabel(
+                            'Intervalo',
+                            '${ref.read(dateOperationsProvider).totalHours} Horas',
+                          ),
+                          _makeLabel(
+                            null,
+                            ref
+                                .read(dateOperationsProvider.notifier)
+                                .formatHoursToString(),
+                          ),
+                        ],
                       ),
                     ),
                   ],
