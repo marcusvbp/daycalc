@@ -1,0 +1,111 @@
+import 'package:daycalc/app/enums/operation_type.dart';
+
+/// Modelo de dados para um registro de operação no histórico
+class DateOperationRecord {
+  final OperationType operationType;
+  final int totalHours;
+  final DateTime timestamp;
+
+  const DateOperationRecord({
+    required this.operationType,
+    required this.totalHours,
+    required this.timestamp,
+  });
+
+  /// Converte horas totais para diferentes unidades de tempo
+  Map<String, int> formatHoursToUnits() {
+    final int totalHours = this.totalHours.abs();
+
+    final int years = totalHours ~/ (24 * 365);
+    final int remainingHoursAfterYears = totalHours % (24 * 365);
+
+    final int months = remainingHoursAfterYears ~/ (24 * 30);
+    final int remainingHoursAfterMonths = remainingHoursAfterYears % (24 * 30);
+
+    final int weeks = remainingHoursAfterMonths ~/ (24 * 7);
+    final int remainingHoursAfterWeeks = remainingHoursAfterMonths % (24 * 7);
+
+    final int days = remainingHoursAfterWeeks ~/ 24;
+    final int hours = remainingHoursAfterWeeks % 24;
+
+    return {
+      'years': years,
+      'months': months,
+      'weeks': weeks,
+      'days': days,
+      'hours': hours,
+    };
+  }
+
+  /// Formata as horas em uma string legível
+  String formatHoursToString() {
+    final units = formatHoursToUnits();
+    final List<String> parts = [];
+
+    if (units['years']! > 0) {
+      parts.add('${units['years']} ${units['years'] == 1 ? 'ano' : 'anos'}');
+    }
+    if (units['months']! > 0) {
+      parts.add('${units['months']} ${units['months'] == 1 ? 'mês' : 'meses'}');
+    }
+    if (units['weeks']! > 0) {
+      parts.add(
+        '${units['weeks']} ${units['weeks'] == 1 ? 'semana' : 'semanas'}',
+      );
+    }
+    if (units['days']! > 0) {
+      parts.add('${units['days']} ${units['days'] == 1 ? 'dia' : 'dias'}');
+    }
+    if (units['hours']! > 0) {
+      parts.add('${units['hours']} ${units['hours'] == 1 ? 'hora' : 'horas'}');
+    }
+
+    if (parts.isEmpty) {
+      return '0 horas';
+    }
+
+    return parts.join(', ');
+  }
+
+  /// Retorna uma descrição da operação
+  String get operationDescription {
+    final operationText = operationType == OperationType.add
+        ? 'Adicionar'
+        : 'Subtrair';
+    return '$operationText ${formatHoursToString()}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DateOperationRecord &&
+        other.operationType == operationType &&
+        other.totalHours == totalHours &&
+        other.timestamp == timestamp;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operationType': operationType.name,
+      'totalHours': totalHours,
+      'timestamp': timestamp.toIso8601String(),
+    };
+  }
+
+  factory DateOperationRecord.fromJson(Map<String, dynamic> json) {
+    return DateOperationRecord(
+      operationType: OperationType.values.byName(json['operationType']),
+      totalHours: json['totalHours'],
+      timestamp: DateTime.parse(json['timestamp']),
+    );
+  }
+
+  @override
+  int get hashCode =>
+      operationType.hashCode ^ totalHours.hashCode ^ timestamp.hashCode;
+
+  @override
+  String toString() {
+    return 'DateOperationRecord(operationType: $operationType, totalHours: $totalHours, timestamp: $timestamp)';
+  }
+}

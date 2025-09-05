@@ -1,26 +1,31 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'date_operations_provider.dart';
+part of 'date_operations_history_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dateOperationsHash() => r'0ba569eaf4e17063ff29caba9a0633cbcb6bda48';
+String _$dateOperationsHistoryHash() =>
+    r'891380dc04003a0f118c2936bdb78e70e280b7a3';
 
-/// See also [DateOperations].
-@ProviderFor(DateOperations)
-final dateOperationsProvider =
-    AutoDisposeNotifierProvider<DateOperations, DateOperationsState>.internal(
-      DateOperations.new,
-      name: r'dateOperationsProvider',
+/// See also [DateOperationsHistory].
+@ProviderFor(DateOperationsHistory)
+final dateOperationsHistoryProvider =
+    AutoDisposeNotifierProvider<
+      DateOperationsHistory,
+      List<DateOperationRecord>
+    >.internal(
+      DateOperationsHistory.new,
+      name: r'dateOperationsHistoryProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$dateOperationsHash,
+          : _$dateOperationsHistoryHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$DateOperations = AutoDisposeNotifier<DateOperationsState>;
+typedef _$DateOperationsHistory =
+    AutoDisposeNotifier<List<DateOperationRecord>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
