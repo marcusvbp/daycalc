@@ -22,6 +22,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentNumber = 0;
   bool isCalculated = false;
   DateCalculator? _dateCalculator;
+  TimeUnit showTimeUnit = TimeUnit.hours;
 
   void _updateTimeValue(WidgetRef ref, int number) {
     setState(() {
@@ -100,6 +101,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final userDate = ref.watch(userDateProvider);
     final localizations = AppLocalizations.of(context)!;
     final dateOperations = ref.watch(dateOperationsProvider);
+    final timeConversions = ref
+        .read(dateOperationsProvider.notifier)
+        .timeConversions;
 
     return Scaffold(
       appBar: AppBar(
@@ -328,14 +332,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             _dateCalculator!.formattedDate,
                           ),
                           _makeLabel(
-                            'Intervalo',
-                            '${ref.read(dateOperationsProvider).totalHours} Horas',
-                          ),
-                          _makeLabel(
                             null,
                             ref
                                 .read(dateOperationsProvider.notifier)
                                 .formatHoursToString(),
+                          ),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              _makeLabel(
+                                'Intervalo',
+                                timeConversions[showTimeUnit.name].toString(),
+                              ),
+                              SizedBox(
+                                height: 22,
+                                child: SegmentedButton<TimeUnit>(
+                                  selected: {showTimeUnit},
+                                  showSelectedIcon: false,
+                                  style: SegmentedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 5,
+                                      vertical: 10,
+                                    ),
+                                    alignment: Alignment.topCenter,
+                                    visualDensity: VisualDensity.compact,
+                                    selectedBackgroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    selectedForegroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                  onSelectionChanged:
+                                      (Set<TimeUnit> newSelection) {
+                                        setState(() {
+                                          showTimeUnit = newSelection.first;
+                                        });
+                                      },
+                                  segments: TimeUnit.values.map((unit) {
+                                    return ButtonSegment<TimeUnit>(
+                                      value: unit,
+                                      icon: null,
+                                      label: Text(
+                                        _getTimeUnitLabel(unit, localizations),
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
