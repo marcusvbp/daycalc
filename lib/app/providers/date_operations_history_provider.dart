@@ -6,27 +6,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'date_operations_history_provider.g.dart';
 
 @riverpod
-class DateOperationsHistory extends _$DateOperationsHistory {
+class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
   @override
-  List<DateOperationRecord> build() {
-    // Inicializa com lista vazia, os dados serão carregados via loadFromStorage()
-    return [];
-  }
-
-  /// Carrega os dados do armazenamento persistente
-  Future<void> loadFromStorage() async {
+  Future<List<DateOperationRecord>> build() async {
     try {
-      final operations = await DateOperationsStorageService.loadOperations();
-      state = operations;
+      return await DateOperationsStorageService.loadOperations();
     } catch (e) {
-      // Em caso de erro, mantém a lista vazia
-      state = [];
+      // Em caso de erro, retorna lista vazia
+      return [];
     }
-  }
-
-  /// Salva automaticamente os dados no armazenamento persistente
-  Future<void> _saveToStorage() async {
-    await DateOperationsStorageService.saveOperations(state);
   }
 
   /// Adiciona uma nova operação ao histórico
@@ -35,49 +23,108 @@ class DateOperationsHistory extends _$DateOperationsHistory {
     required int totalHours,
     DateTime? timestamp,
   }) async {
-    final record = DateOperationRecord(
-      operationType: operationType,
-      totalHours: totalHours,
-      timestamp: timestamp ?? DateTime.now(),
-    );
+    try {
+      // Obtém o histórico atual
+      final currentHistory = await future;
 
-    state = [...state, record];
-    await _saveToStorage();
+      // Cria o novo registro
+      final record = DateOperationRecord(
+        operationType: operationType,
+        totalHours: totalHours,
+        timestamp: timestamp ?? DateTime.now(),
+      );
+
+      // Adiciona ao histórico
+      final updatedHistory = [...currentHistory, record];
+
+      // Salva no armazenamento
+      await DateOperationsStorageService.saveOperations(updatedHistory);
+
+      // Atualiza o estado
+      state = AsyncValue.data(updatedHistory);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
   }
 
   /// Remove uma operação do histórico pelo índice
   Future<void> removeOperation(int index) async {
-    if (index >= 0 && index < state.length) {
-      state = state
-          .asMap()
-          .entries
-          .where((entry) => entry.key != index)
-          .map((entry) => entry.value)
-          .toList();
-      await _saveToStorage();
+    try {
+      // Obtém o histórico atual
+      final currentHistory = await future;
+
+      if (index >= 0 && index < currentHistory.length) {
+        // Remove o item pelo índice
+        final updatedHistory = currentHistory
+            .asMap()
+            .entries
+            .where((entry) => entry.key != index)
+            .map((entry) => entry.value)
+            .toList();
+
+        // Salva no armazenamento
+        await DateOperationsStorageService.saveOperations(updatedHistory);
+
+        // Atualiza o estado
+        state = AsyncValue.data(updatedHistory);
+      }
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
     }
   }
 
   /// Remove uma operação específica do histórico
   Future<void> removeOperationRecord(DateOperationRecord record) async {
-    state = state.where((item) => item != record).toList();
-    await _saveToStorage();
+    try {
+      // Obtém o histórico atual
+      final currentHistory = await future;
+
+      // Remove o registro específico
+      final updatedHistory = currentHistory
+          .where((item) => item != record)
+          .toList();
+
+      // Salva no armazenamento
+      await DateOperationsStorageService.saveOperations(updatedHistory);
+
+      // Atualiza o estado
+      state = AsyncValue.data(updatedHistory);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
   }
 
   /// Limpa todo o histórico
   Future<void> clearHistory() async {
-    state = [];
-    await _saveToStorage();
+    try {
+      // Salva lista vazia no armazenamento
+      await DateOperationsStorageService.saveOperations([]);
+
+      // Atualiza o estado
+      state = AsyncValue.data([]);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
   }
 
   /// Obtém operações por tipo
   List<DateOperationRecord> getOperationsByType(OperationType type) {
-    return state.where((record) => record.operationType == type).toList();
+    final currentState = state;
+    if (currentState is! AsyncData<List<DateOperationRecord>>) {
+      return [];
+    }
+    return currentState.value
+        .where((record) => record.operationType == type)
+        .toList();
   }
 
   /// Obtém operações realizadas em uma data específica
   List<DateOperationRecord> getOperationsByDate(DateTime date) {
-    return state.where((record) {
+    final currentState = state;
+    if (currentState is! AsyncData<List<DateOperationRecord>>) {
+      return [];
+    }
+    return currentState.value.where((record) {
       return record.timestamp.year == date.year &&
           record.timestamp.month == date.month &&
           record.timestamp.day == date.day;
@@ -89,7 +136,11 @@ class DateOperationsHistory extends _$DateOperationsHistory {
     DateTime startDate,
     DateTime endDate,
   ) {
-    return state.where((record) {
+    final currentState = state;
+    if (currentState is! AsyncData<List<DateOperationRecord>>) {
+      return [];
+    }
+    return currentState.value.where((record) {
       return record.timestamp.isAfter(
             startDate.subtract(const Duration(days: 1)),
           ) &&
@@ -99,12 +150,17 @@ class DateOperationsHistory extends _$DateOperationsHistory {
 
   /// Obtém o total de horas por tipo de operação
   Map<OperationType, int> getTotalHoursByType() {
+    final currentState = state;
+    if (currentState is! AsyncData<List<DateOperationRecord>>) {
+      return {OperationType.add: 0, OperationType.subtract: 0};
+    }
+
     final Map<OperationType, int> totals = {
       OperationType.add: 0,
       OperationType.subtract: 0,
     };
 
-    for (final record in state) {
+    for (final record in currentState.value) {
       totals[record.operationType] =
           totals[record.operationType]! + record.totalHours;
     }
@@ -114,7 +170,20 @@ class DateOperationsHistory extends _$DateOperationsHistory {
 
   /// Obtém estatísticas do histórico
   Map<String, dynamic> getHistoryStats() {
-    if (state.isEmpty) {
+    final currentState = state;
+    if (currentState is! AsyncData<List<DateOperationRecord>>) {
+      return {
+        'totalOperations': 0,
+        'totalAddHours': 0,
+        'totalSubtractHours': 0,
+        'netHours': 0,
+        'firstOperation': null,
+        'lastOperation': null,
+      };
+    }
+
+    final history = currentState.value;
+    if (history.isEmpty) {
       return {
         'totalOperations': 0,
         'totalAddHours': 0,
@@ -126,11 +195,11 @@ class DateOperationsHistory extends _$DateOperationsHistory {
     }
 
     final totals = getTotalHoursByType();
-    final sortedByDate = List<DateOperationRecord>.from(state)
+    final sortedByDate = List<DateOperationRecord>.from(history)
       ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     return {
-      'totalOperations': state.length,
+      'totalOperations': history.length,
       'totalAddHours': totals[OperationType.add]!,
       'totalSubtractHours': totals[OperationType.subtract]!,
       'netHours': totals[OperationType.add]! - totals[OperationType.subtract]!,
