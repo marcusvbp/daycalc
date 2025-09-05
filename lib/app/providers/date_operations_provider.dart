@@ -136,6 +136,18 @@ class DateOperations extends _$DateOperations {
         return date.subtract(Duration(hours: state.totalHours));
     }
   }
+
+  // Getter que retorna um map com conversões das horas totais para diferentes unidades
+  Map<String, double> get timeConversions {
+    final double totalHours = state.totalHours.toDouble();
+
+    return {
+      'hours': double.parse(totalHours.toStringAsFixed(1)),
+      'days': double.parse((totalHours / 24).toStringAsFixed(1)),
+      'weeks': double.parse((totalHours / (24 * 7)).toStringAsFixed(1)),
+      'months': double.parse((totalHours / (24 * 30)).toStringAsFixed(1)),
+    };
+  }
 }
 
 class DateOperationsState {
