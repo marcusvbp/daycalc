@@ -7,7 +7,7 @@ part of 'date_operations_history_provider.dart';
 // **************************************************************************
 
 String _$dateOperationsHistoryHash() =>
-    r'891380dc04003a0f118c2936bdb78e70e280b7a3';
+    r'63c0518aa8eec61bce591f38b5c82df682762f57';
 
 /// See also [DateOperationsHistory].
 @ProviderFor(DateOperationsHistory)

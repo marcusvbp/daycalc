@@ -1,5 +1,6 @@
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/models/date_operation_record.dart';
+import 'package:daycalc/app/services/date_operations_storage_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'date_operations_history_provider.g.dart';
@@ -8,15 +9,32 @@ part 'date_operations_history_provider.g.dart';
 class DateOperationsHistory extends _$DateOperationsHistory {
   @override
   List<DateOperationRecord> build() {
+    // Inicializa com lista vazia, os dados serão carregados via loadFromStorage()
     return [];
   }
 
+  /// Carrega os dados do armazenamento persistente
+  Future<void> loadFromStorage() async {
+    try {
+      final operations = await DateOperationsStorageService.loadOperations();
+      state = operations;
+    } catch (e) {
+      // Em caso de erro, mantém a lista vazia
+      state = [];
+    }
+  }
+
+  /// Salva automaticamente os dados no armazenamento persistente
+  Future<void> _saveToStorage() async {
+    await DateOperationsStorageService.saveOperations(state);
+  }
+
   /// Adiciona uma nova operação ao histórico
-  void addOperation({
+  Future<void> addOperation({
     required OperationType operationType,
     required int totalHours,
     DateTime? timestamp,
-  }) {
+  }) async {
     final record = DateOperationRecord(
       operationType: operationType,
       totalHours: totalHours,
@@ -24,10 +42,11 @@ class DateOperationsHistory extends _$DateOperationsHistory {
     );
 
     state = [...state, record];
+    await _saveToStorage();
   }
 
   /// Remove uma operação do histórico pelo índice
-  void removeOperation(int index) {
+  Future<void> removeOperation(int index) async {
     if (index >= 0 && index < state.length) {
       state = state
           .asMap()
@@ -35,17 +54,20 @@ class DateOperationsHistory extends _$DateOperationsHistory {
           .where((entry) => entry.key != index)
           .map((entry) => entry.value)
           .toList();
+      await _saveToStorage();
     }
   }
 
   /// Remove uma operação específica do histórico
-  void removeOperationRecord(DateOperationRecord record) {
+  Future<void> removeOperationRecord(DateOperationRecord record) async {
     state = state.where((item) => item != record).toList();
+    await _saveToStorage();
   }
 
   /// Limpa todo o histórico
-  void clearHistory() {
+  Future<void> clearHistory() async {
     state = [];
+    await _saveToStorage();
   }
 
   /// Obtém operações por tipo
