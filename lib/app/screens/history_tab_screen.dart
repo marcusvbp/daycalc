@@ -13,17 +13,6 @@ class HistoryTabScreen extends ConsumerWidget {
     final historyAsync = ref.watch(dateOperationsHistoryNotifierProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Histórico de Operações'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            onPressed: () => _showClearHistoryDialog(context, ref),
-            tooltip: 'Limpar histórico',
-          ),
-        ],
-      ),
       body: historyAsync.when(
         data: (history) => _buildHistoryList(context, ref, history),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -52,6 +41,28 @@ class HistoryTabScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: historyAsync.when(
+        data: (history) => history.isNotEmpty
+            ? Container(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    onPressed: () => _showClearHistoryDialog(context, ref),
+                    icon: const Icon(Icons.clear_all),
+                    label: const Text('Limpar Histórico'),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                ),
+              )
+            : null,
+        loading: () => null,
+        error: (error, stackTrace) => null,
       ),
     );
   }
@@ -94,12 +105,10 @@ class HistoryTabScreen extends ConsumerWidget {
 
     return Column(
       children: [
-        // Estatísticas do histórico
-        _buildHistoryStats(context, ref, history),
-
         // Lista de operações
         Expanded(
           child: ListView.builder(
+            padding: const EdgeInsets.all(16),
             itemCount: sortedHistory.length,
             itemBuilder: (context, index) {
               final record = sortedHistory[index];
@@ -108,124 +117,6 @@ class HistoryTabScreen extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHistoryStats(
-    BuildContext context,
-    WidgetRef ref,
-    List<DateOperationRecord> history,
-  ) {
-    final stats = ref
-        .read(dateOperationsHistoryNotifierProvider.notifier)
-        .getHistoryStats();
-
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Estatísticas',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  'Total de Operações',
-                  '${stats['totalOperations']}',
-                  Icons.calculate,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  'Horas Adicionadas',
-                  '${stats['totalAddHours']}h',
-                  Icons.add,
-                  Colors.green,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  'Horas Subtraídas',
-                  '${stats['totalSubtractHours']}h',
-                  Icons.remove,
-                  Colors.red,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  'Saldo Líquido',
-                  '${stats['netHours']}h',
-                  Icons.balance,
-                  stats['netHours'] >= 0 ? Colors.blue : Colors.orange,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatCard(
-    BuildContext context,
-    String title,
-    String value,
-    IconData icon, [
-    Color? color,
-  ]) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            color: color ?? Theme.of(context).colorScheme.primary,
-            size: 20,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 
@@ -239,7 +130,7 @@ class HistoryTabScreen extends ConsumerWidget {
     final isAddOperation = record.operationType == OperationType.add;
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isAddOperation ? Colors.green : Colors.red,

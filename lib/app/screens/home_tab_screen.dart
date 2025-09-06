@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/models/date_calculator.dart';
+import 'package:daycalc/app/providers/date_operations_history_provider.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
@@ -270,6 +271,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                       ? () async {
                           _updateTimeValue(ref, _currentNumber);
                           final dtOp = ref.read(dateOperationsProvider);
+
                           setState(() {
                             isCalculated = true;
                             _dateCalculator = DateCalculator(
@@ -281,6 +283,15 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                               )!.localeName,
                             );
                           });
+                          ref
+                              .read(
+                                dateOperationsHistoryNotifierProvider.notifier,
+                              )
+                              .addOperation(
+                                operationType: dtOp.operationType,
+                                totalHours: dtOp.totalHours,
+                                timestamp: DateTime.now(),
+                              );
                         }
                       : null,
                   icon: Icon(Icons.calculate),
