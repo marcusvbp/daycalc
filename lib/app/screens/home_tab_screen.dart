@@ -24,6 +24,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   DateCalculator? _dateCalculator;
   TimeUnit showTimeUnit = TimeUnit.hours;
   FocusNode numberFocusNode = FocusNode();
+  late final ScrollController scrollController = ScrollController();
 
   void _updateTimeValue(WidgetRef ref, int number) {
     setState(() {
@@ -97,6 +98,16 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     ),
   );
 
+  void _scrollToBottom() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userDate = ref.watch(userDateProvider);
@@ -108,6 +119,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
 
     return Scaffold(
       body: SingleChildScrollView(
+        controller: scrollController,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,6 +165,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                       _dateCalculator = null;
                     });
                     ref.read(userDateProvider.notifier).add(dates.first);
+                    _scrollToBottom();
                   }
                 },
               ),
@@ -311,6 +324,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                   totalHours: dtOp.totalHours,
                                   timestamp: DateTime.now(),
                                 );
+                            _scrollToBottom();
                           }
                         : null,
                     icon: Icon(Icons.calculate),
