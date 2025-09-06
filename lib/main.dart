@@ -5,11 +5,14 @@ import 'package:daycalc/app/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   // Garante que os widgets sejam inicializados
   WidgetsFlutterBinding.ensureInitialized();
+
+  await MobileAds.instance.initialize();
 
   // Inicializa o SharedPreferences
   await SharedPreferences.getInstance();
