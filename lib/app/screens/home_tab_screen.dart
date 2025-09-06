@@ -23,6 +23,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   bool isCalculated = false;
   DateCalculator? _dateCalculator;
   TimeUnit showTimeUnit = TimeUnit.hours;
+  FocusNode numberFocusNode = FocusNode();
 
   void _updateTimeValue(WidgetRef ref, int number) {
     setState(() {
@@ -196,112 +197,143 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             // Campo de entrada e dropdown
-            Row(
-              spacing: 16,
-              children: [
-                // Segmented button para tipo de operação
-                SegmentedButton<OperationType>(
-                  segments: [
-                    ButtonSegment<OperationType>(
-                      value: OperationType.add,
-                      icon: Icon(Icons.add),
-                      tooltip: localizations.add,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                List<Widget> partOne = [
+                  // Segmented button para tipo de operação
+                  SegmentedButton<OperationType>(
+                    showSelectedIcon: false,
+                    style: SegmentedButton.styleFrom(
+                      selectedBackgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primary,
+                      selectedForegroundColor: Theme.of(
+                        context,
+                      ).colorScheme.onPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                    ButtonSegment<OperationType>(
-                      value: OperationType.subtract,
-                      icon: Icon(Icons.remove),
-                      tooltip: localizations.subtract,
-                    ),
-                  ],
-                  selected: {dateOperations.operationType},
-                  onSelectionChanged: (Set<OperationType> newSelection) {
-                    setState(() {
-                      _dateCalculator = null;
-                      isCalculated = false;
-                    });
-                    ref
-                        .read(dateOperationsProvider.notifier)
-                        .setOperationType(newSelection.first);
-                  },
-                ),
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: localizations.number,
-                      border: OutlineInputBorder(),
-                      hintText: '0',
-                      isDense: true,
-                    ),
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      final number = int.tryParse(value) ?? 0;
-                      _updateTimeValue(ref, number);
+                    segments: [
+                      ButtonSegment<OperationType>(
+                        value: OperationType.add,
+                        icon: Icon(Icons.add),
+                        tooltip: localizations.add,
+                      ),
+                      ButtonSegment<OperationType>(
+                        value: OperationType.subtract,
+                        icon: Icon(Icons.remove),
+                        tooltip: localizations.subtract,
+                      ),
+                    ],
+                    selected: {dateOperations.operationType},
+                    onSelectionChanged: (Set<OperationType> newSelection) {
+                      setState(() {
+                        _dateCalculator = null;
+                        isCalculated = false;
+                      });
+                      ref
+                          .read(dateOperationsProvider.notifier)
+                          .setOperationType(newSelection.first);
                     },
                   ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: DropdownButtonFormField<TimeUnit>(
-                    decoration: InputDecoration(
-                      labelText: localizations.unit,
-                      border: OutlineInputBorder(),
-                      isDense: true,
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      focusNode: numberFocusNode,
+                      decoration: InputDecoration(
+                        labelText: localizations.number,
+                        border: OutlineInputBorder(),
+                        hintText: '0',
+                        isDense: true,
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        final number = int.tryParse(value) ?? 0;
+                        _updateTimeValue(ref, number);
+                      },
                     ),
-                    initialValue: _selectedTimeUnit,
-                    items: TimeUnit.values.map((unit) {
-                      return DropdownMenuItem<TimeUnit>(
-                        value: unit,
-                        child: Text(_getTimeUnitLabel(unit, localizations)),
-                      );
-                    }).toList(),
-                    onChanged: (TimeUnit? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          _selectedTimeUnit = newValue;
-                          _dateCalculator = null;
-                          isCalculated = false;
-                        });
-                      }
-                    },
                   ),
-                ),
-                IconButton(
-                  onPressed: _currentNumber != 0 && userDate != null
-                      ? () async {
-                          _updateTimeValue(ref, _currentNumber);
-                          final dtOp = ref.read(dateOperationsProvider);
-
+                ];
+                List<Widget> partTwo = [
+                  Expanded(
+                    flex: 3,
+                    child: DropdownButtonFormField<TimeUnit>(
+                      decoration: InputDecoration(
+                        labelText: localizations.unit,
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      initialValue: _selectedTimeUnit,
+                      items: TimeUnit.values.map((unit) {
+                        return DropdownMenuItem<TimeUnit>(
+                          value: unit,
+                          child: Text(_getTimeUnitLabel(unit, localizations)),
+                        );
+                      }).toList(),
+                      onChanged: (TimeUnit? newValue) {
+                        if (newValue != null) {
                           setState(() {
-                            isCalculated = true;
-                            _dateCalculator = DateCalculator(
-                              date: userDate,
-                              hours: dtOp.totalHours,
-                              operationType: dtOp.operationType,
-                              languageCode: AppLocalizations.of(
-                                context,
-                              )!.localeName,
-                            );
+                            _selectedTimeUnit = newValue;
+                            _dateCalculator = null;
+                            isCalculated = false;
                           });
-                          ref
-                              .read(
-                                dateOperationsHistoryNotifierProvider.notifier,
-                              )
-                              .addOperation(
-                                operationType: dtOp.operationType,
-                                totalHours: dtOp.totalHours,
-                                timestamp: DateTime.now(),
-                              );
                         }
-                      : null,
-                  icon: Icon(Icons.calculate),
-                  tooltip: localizations.calculate,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  style: IconButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                      },
+                    ),
                   ),
-                ),
-              ],
+                  IconButton(
+                    onPressed: _currentNumber != 0 && userDate != null
+                        ? () async {
+                            numberFocusNode.unfocus();
+                            _updateTimeValue(ref, _currentNumber);
+                            final dtOp = ref.read(dateOperationsProvider);
+
+                            setState(() {
+                              isCalculated = true;
+                              _dateCalculator = DateCalculator(
+                                date: userDate,
+                                hours: dtOp.totalHours,
+                                operationType: dtOp.operationType,
+                                languageCode: AppLocalizations.of(
+                                  context,
+                                )!.localeName,
+                              );
+                            });
+                            ref
+                                .read(
+                                  dateOperationsHistoryNotifierProvider
+                                      .notifier,
+                                )
+                                .addOperation(
+                                  initialDate: userDate,
+                                  operationType: dtOp.operationType,
+                                  totalHours: dtOp.totalHours,
+                                  timestamp: DateTime.now(),
+                                );
+                          }
+                        : null,
+                    icon: Icon(Icons.calculate),
+                    tooltip: localizations.calculate,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    style: IconButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ];
+                if (constraints.maxWidth <= 380) {
+                  return Column(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(spacing: 8, children: partOne),
+                      Row(spacing: 8, children: partTwo),
+                    ],
+                  );
+                }
+                return Row(spacing: 8, children: [...partOne, ...partTwo]);
+              },
             ),
             // Exibição do resultado formatado
             if (isCalculated)
@@ -343,7 +375,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                 timeConversions[showTimeUnit.name].toString(),
                               ),
                               SizedBox(
-                                height: 22,
+                                height: 32,
                                 child: SegmentedButton<TimeUnit>(
                                   selected: {showTimeUnit},
                                   showSelectedIcon: false,
@@ -352,7 +384,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                       horizontal: 5,
                                       vertical: 10,
                                     ),
-                                    alignment: Alignment.topCenter,
+                                    alignment: Alignment(0, -.5),
                                     visualDensity: VisualDensity.compact,
                                     selectedBackgroundColor: Theme.of(
                                       context,
