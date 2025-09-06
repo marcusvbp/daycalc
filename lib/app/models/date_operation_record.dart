@@ -5,11 +5,13 @@ class DateOperationRecord {
   final OperationType operationType;
   final int totalHours;
   final DateTime timestamp;
+  final DateTime initialDate;
 
   const DateOperationRecord({
     required this.operationType,
     required this.totalHours,
     required this.timestamp,
+    required this.initialDate,
   });
 
   /// Converte horas totais para diferentes unidades de tempo
@@ -81,7 +83,8 @@ class DateOperationRecord {
     return other is DateOperationRecord &&
         other.operationType == operationType &&
         other.totalHours == totalHours &&
-        other.timestamp == timestamp;
+        other.timestamp == timestamp &&
+        other.initialDate == initialDate;
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +92,7 @@ class DateOperationRecord {
       'operationType': operationType.name,
       'totalHours': totalHours,
       'timestamp': timestamp.toIso8601String(),
+      'initialDate': initialDate.toIso8601String(),
     };
   }
 
@@ -97,15 +101,19 @@ class DateOperationRecord {
       operationType: OperationType.values.byName(json['operationType']),
       totalHours: json['totalHours'],
       timestamp: DateTime.parse(json['timestamp']),
+      initialDate: DateTime.parse(json['initialDate']),
     );
   }
 
   @override
   int get hashCode =>
-      operationType.hashCode ^ totalHours.hashCode ^ timestamp.hashCode;
+      operationType.hashCode ^
+      totalHours.hashCode ^
+      timestamp.hashCode ^
+      initialDate.hashCode;
 
   @override
   String toString() {
-    return 'DateOperationRecord(operationType: $operationType, totalHours: $totalHours, timestamp: $timestamp)';
+    return 'DateOperationRecord(operationType: $operationType, totalHours: $totalHours, timestamp: $timestamp, initialDate: $initialDate)';
   }
 }

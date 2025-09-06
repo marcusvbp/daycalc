@@ -21,6 +21,7 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
   Future<void> addOperation({
     required OperationType operationType,
     required int totalHours,
+    required DateTime initialDate,
     DateTime? timestamp,
   }) async {
     try {
@@ -31,6 +32,7 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
       final record = DateOperationRecord(
         operationType: operationType,
         totalHours: totalHours,
+        initialDate: initialDate,
         timestamp: timestamp ?? DateTime.now(),
       );
 
