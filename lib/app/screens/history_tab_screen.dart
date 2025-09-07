@@ -42,23 +42,14 @@ class HistoryTabScreen extends ConsumerWidget {
           ),
         ),
       ),
-      bottomNavigationBar: historyAsync.when(
+      floatingActionButton: historyAsync.when(
         data: (history) => history.isNotEmpty
-            ? Container(
-                padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: TextButton.icon(
-                    onPressed: () => _showClearHistoryDialog(context, ref),
-                    icon: const Icon(Icons.clear_all),
-                    label: const Text('Limpar Histórico'),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-                ),
+            ? FloatingActionButton.extended(
+                onPressed: () => _showClearHistoryDialog(context, ref),
+                icon: const Icon(Icons.clear_all),
+                label: const Text('Limpar Histórico'),
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
               )
             : null,
         loading: () => null,
@@ -103,20 +94,18 @@ class HistoryTabScreen extends ConsumerWidget {
     final sortedHistory = List<DateOperationRecord>.from(history)
       ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-    return Column(
-      children: [
-        // Lista de operações
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: sortedHistory.length,
-            itemBuilder: (context, index) {
-              final record = sortedHistory[index];
-              return _buildHistoryItem(context, ref, record, index);
-            },
-          ),
-        ),
-      ],
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: sortedHistory.length,
+      itemBuilder: (context, index) {
+        final record = sortedHistory[index];
+        return Padding(
+          padding: index == sortedHistory.length - 1
+              ? const EdgeInsets.only(bottom: 74)
+              : EdgeInsets.zero,
+          child: _buildHistoryItem(context, ref, record, index),
+        );
+      },
     );
   }
 
