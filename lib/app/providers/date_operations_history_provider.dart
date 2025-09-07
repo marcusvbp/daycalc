@@ -1,4 +1,5 @@
 import 'package:daycalc/app/enums/operation_type.dart';
+import 'package:daycalc/app/enums/time_unit.dart';
 import 'package:daycalc/app/models/date_operation_record.dart';
 import 'package:daycalc/app/services/date_operations_storage_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,6 +22,7 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
   Future<void> addOperation({
     required OperationType operationType,
     required int totalHours,
+    required TimeUnit timeUnit,
     required DateTime initialDate,
     DateTime? timestamp,
   }) async {
@@ -32,6 +34,7 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
       final record = DateOperationRecord(
         operationType: operationType,
         totalHours: totalHours,
+        timeUnit: timeUnit,
         initialDate: initialDate,
         timestamp: timestamp ?? DateTime.now(),
       );
