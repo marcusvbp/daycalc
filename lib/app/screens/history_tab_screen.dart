@@ -120,7 +120,11 @@ class HistoryTabScreen extends ConsumerWidget {
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
+      clipBehavior: Clip.antiAlias,
       child: ListTile(
+        onTap: () {
+          // Método anônimo para ação de toque no card
+        },
         leading: CircleAvatar(
           backgroundColor: isAddOperation ? Colors.green : Colors.red,
           child: Icon(
