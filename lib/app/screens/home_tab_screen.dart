@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:daycalc/app/enums/operation_type.dart';
+import 'package:daycalc/app/enums/time_unit.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/models/date_calculator.dart';
 import 'package:daycalc/app/providers/date_operations_history_provider.dart';
@@ -7,8 +8,6 @@ import 'package:daycalc/app/providers/date_operations_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-enum TimeUnit { hours, days, weeks, months }
 
 class HomeTabScreen extends ConsumerStatefulWidget {
   const HomeTabScreen({super.key});
@@ -109,6 +108,12 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userDate = ref.watch(userDateProvider);
     final localizations = AppLocalizations.of(context)!;
@@ -120,7 +125,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         controller: scrollController,
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 16,
@@ -322,6 +327,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                   initialDate: userDate,
                                   operationType: dtOp.operationType,
                                   totalHours: dtOp.totalHours,
+                                  timeUnit: _selectedTimeUnit,
                                   timestamp: DateTime.now(),
                                 );
                             _scrollToBottom();

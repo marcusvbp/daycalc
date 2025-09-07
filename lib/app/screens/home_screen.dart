@@ -45,17 +45,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             },
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(icon: const Icon(Icons.calculate), text: 'Calculadora'),
-            Tab(icon: const Icon(Icons.history), text: 'Histórico'),
-          ],
-        ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [HomeTabScreen(), HistoryTabScreen()],
+        children: [HomeTabScreen(), HistoryTabScreen()],
+      ),
+      bottomNavigationBar: TabBar(
+        indicatorColor: Colors.black,
+        labelPadding: const EdgeInsets.only(bottom: 16),
+        controller: _tabController,
+        tabs: [
+          Tab(icon: const Icon(Icons.calculate), text: 'Calculadora'),
+          Tab(icon: const Icon(Icons.history), text: 'Histórico'),
+        ],
       ),
     );
   }
