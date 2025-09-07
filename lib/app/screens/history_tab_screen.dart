@@ -115,7 +115,7 @@ class HistoryTabScreen extends ConsumerWidget {
     DateOperationRecord record,
     int index,
   ) {
-    final dateFormat = DateFormat('dd/MM/yyyy HH:mm');
+    final dateFormat = DateFormat('dd/MM/yyyy');
     final isAddOperation = record.operationType == OperationType.add;
 
     return Card(
@@ -129,11 +129,11 @@ class HistoryTabScreen extends ConsumerWidget {
           ),
         ),
         title: Text(
-          record.operationDescription,
+          dateFormat.format(record.initialDate),
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
-          dateFormat.format(record.timestamp),
+          '${record.operationType.symbol} ${record.formatHoursToString()}',
           style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: PopupMenuButton<String>(
@@ -199,9 +199,7 @@ class HistoryTabScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Excluir Operação'),
-        content: Text(
-          'Tem certeza que deseja excluir a operação "${record.operationDescription}"?',
-        ),
+        content: Text('Tem certeza que deseja excluir a operação?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
