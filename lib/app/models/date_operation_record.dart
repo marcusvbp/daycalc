@@ -1,15 +1,18 @@
 import 'package:daycalc/app/enums/operation_type.dart';
+import 'package:daycalc/app/enums/time_unit.dart';
 
 /// Modelo de dados para um registro de operação no histórico
 class DateOperationRecord {
   final OperationType operationType;
   final int totalHours;
+  final TimeUnit timeUnit;
   final DateTime timestamp;
   final DateTime initialDate;
 
   const DateOperationRecord({
     required this.operationType,
     required this.totalHours,
+    required this.timeUnit,
     required this.timestamp,
     required this.initialDate,
   });
@@ -74,7 +77,7 @@ class DateOperationRecord {
     final operationText = operationType == OperationType.add
         ? 'Adicionar'
         : 'Subtrair';
-    return '$operationText ${formatHoursToString()}';
+    return '$operationText ${formatHoursToString()} (${timeUnit.name})';
   }
 
   @override
@@ -83,6 +86,7 @@ class DateOperationRecord {
     return other is DateOperationRecord &&
         other.operationType == operationType &&
         other.totalHours == totalHours &&
+        other.timeUnit == timeUnit &&
         other.timestamp == timestamp &&
         other.initialDate == initialDate;
   }
@@ -91,6 +95,7 @@ class DateOperationRecord {
     return {
       'operationType': operationType.name,
       'totalHours': totalHours,
+      'timeUnit': timeUnit.name,
       'timestamp': timestamp.toIso8601String(),
       'initialDate': initialDate.toIso8601String(),
     };
@@ -100,6 +105,7 @@ class DateOperationRecord {
     return DateOperationRecord(
       operationType: OperationType.values.byName(json['operationType']),
       totalHours: json['totalHours'],
+      timeUnit: TimeUnit.values.byName(json['timeUnit'] ?? 'hours'),
       timestamp: DateTime.parse(json['timestamp']),
       initialDate: DateTime.parse(json['initialDate']),
     );
@@ -109,11 +115,12 @@ class DateOperationRecord {
   int get hashCode =>
       operationType.hashCode ^
       totalHours.hashCode ^
+      timeUnit.hashCode ^
       timestamp.hashCode ^
       initialDate.hashCode;
 
   @override
   String toString() {
-    return 'DateOperationRecord(operationType: $operationType, totalHours: $totalHours, timestamp: $timestamp, initialDate: $initialDate)';
+    return 'DateOperationRecord(operationType: $operationType, totalHours: $totalHours, timeUnit: $timeUnit, timestamp: $timestamp, initialDate: $initialDate)';
   }
 }
