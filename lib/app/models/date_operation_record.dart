@@ -72,14 +72,6 @@ class DateOperationRecord {
     return parts.join(', ');
   }
 
-  /// Retorna uma descrição da operação
-  String get operationDescription {
-    final operationText = operationType == OperationType.add
-        ? 'Adicionar'
-        : 'Subtrair';
-    return '$operationText ${formatHoursToString()} (${timeUnit.name})';
-  }
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
