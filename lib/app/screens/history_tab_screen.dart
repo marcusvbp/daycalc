@@ -1,12 +1,16 @@
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/models/date_operation_record.dart';
 import 'package:daycalc/app/providers/date_operations_history_provider.dart';
+import 'package:daycalc/app/providers/date_operations_provider.dart';
+import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class HistoryTabScreen extends ConsumerWidget {
-  const HistoryTabScreen({super.key});
+  final VoidCallback? onNavigateToHomeTab;
+
+  const HistoryTabScreen({super.key, this.onNavigateToHomeTab});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -123,7 +127,20 @@ class HistoryTabScreen extends ConsumerWidget {
       clipBehavior: Clip.antiAlias,
       child: ListTile(
         onTap: () {
-          // Método anônimo para ação de toque no card
+          // Popular dados do record no home_tab_screen
+          // 1. Definir a data inicial
+          ref.read(userDateNotifierProvider.notifier).add(record.initialDate);
+
+          // 2. Definir o tipo de operação e total de horas
+          final dateOpsNotifier = ref.read(
+            dateOperationsNotifierProvider.notifier,
+          );
+          dateOpsNotifier.setOperationType(record.operationType);
+          dateOpsNotifier.setTotalHours(record.totalHours);
+          dateOpsNotifier.setTimeUnit(record.timeUnit);
+
+          // 3. Navegar para a tab home
+          onNavigateToHomeTab?.call();
         },
         leading: CircleAvatar(
           backgroundColor: isAddOperation ? Colors.green : Colors.red,

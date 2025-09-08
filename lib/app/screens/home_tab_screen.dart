@@ -7,6 +7,7 @@ import 'package:daycalc/app/providers/date_operations_history_provider.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeTabScreen extends ConsumerStatefulWidget {
@@ -17,55 +18,45 @@ class HomeTabScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
-  TimeUnit _selectedTimeUnit = TimeUnit.days;
   int _currentNumber = 0;
   bool isCalculated = false;
   DateCalculator? _dateCalculator;
   TimeUnit showTimeUnit = TimeUnit.hours;
   FocusNode numberFocusNode = FocusNode();
+  final TextEditingController numberController = TextEditingController();
   late final ScrollController scrollController = ScrollController();
 
   void _updateTimeValue(WidgetRef ref, int number) {
+    final num = number < 0 ? number * -1 : number;
     setState(() {
-      _currentNumber = number;
+      _currentNumber = num;
     });
 
-    final notifier = ref.read(dateOperationsProvider.notifier);
-    final dateOperations = ref.watch(dateOperationsProvider);
+    final notifier = ref.read(dateOperationsNotifierProvider.notifier);
+    final dateOperations = ref.watch(dateOperationsNotifierProvider);
     final operationType = dateOperations.operationType;
+    final timeUnit = dateOperations.timeUnit;
 
     // Limpar valores anteriores
     notifier.clear();
 
     // Adicionar novo valor baseado na unidade selecionada
-    switch (_selectedTimeUnit) {
+    switch (timeUnit) {
       case TimeUnit.hours:
-        if (operationType == OperationType.add) {
-          notifier.addHours(number);
-        } else {
-          notifier.subtractHours(number);
-        }
+        notifier.addHours(num);
+
         break;
       case TimeUnit.days:
-        if (operationType == OperationType.add) {
-          notifier.addDays(number);
-        } else {
-          notifier.subtractDays(number);
-        }
+        notifier.addDays(num);
+
         break;
       case TimeUnit.weeks:
-        if (operationType == OperationType.add) {
-          notifier.addWeeks(number);
-        } else {
-          notifier.subtractWeeks(number);
-        }
+        notifier.addWeeks(num);
+
         break;
       case TimeUnit.months:
-        if (operationType == OperationType.add) {
-          notifier.addMonths(number);
-        } else {
-          notifier.subtractMonths(number);
-        }
+        notifier.addMonths(num);
+
         break;
     }
   }
@@ -108,6 +99,21 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    final dateOperations = ref.read(dateOperationsNotifierProvider);
+    if (dateOperations.totalTimeByTimeUnit != 0) {
+      setState(() {
+        _currentNumber = dateOperations.totalTimeByTimeUnit;
+        numberController.text = dateOperations.totalTimeByTimeUnit.toString();
+      });
+      Future.delayed(const Duration(milliseconds: 200), () {
+        _scrollToBottom();
+      });
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     scrollController.dispose();
     super.dispose();
@@ -115,11 +121,11 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userDate = ref.watch(userDateProvider);
+    final userDate = ref.watch(userDateNotifierProvider);
     final localizations = AppLocalizations.of(context)!;
-    final dateOperations = ref.watch(dateOperationsProvider);
+    final dateOperations = ref.watch(dateOperationsNotifierProvider);
     final timeConversions = ref
-        .read(dateOperationsProvider.notifier)
+        .read(dateOperationsNotifierProvider.notifier)
         .timeConversions;
 
     return Scaffold(
@@ -169,7 +175,9 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                       isCalculated = false;
                       _dateCalculator = null;
                     });
-                    ref.read(userDateProvider.notifier).add(dates.first);
+                    ref
+                        .read(userDateNotifierProvider.notifier)
+                        .add(dates.first);
                     _scrollToBottom();
                   }
                 },
@@ -192,13 +200,13 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        '${localizations.selectedDate}: ${ref.read(userDateProvider.notifier).getFormattedDate(AppLocalizations.of(context)!.localeName)}',
+                        '${localizations.selectedDate}: ${ref.read(userDateNotifierProvider.notifier).getFormattedDate(AppLocalizations.of(context)!.localeName)}',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     IconButton(
                       onPressed: () {
-                        ref.read(userDateProvider.notifier).clear();
+                        ref.read(userDateNotifierProvider.notifier).clear();
                         setState(() {
                           _dateCalculator = null;
                           isCalculated = false;
@@ -251,7 +259,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                         isCalculated = false;
                       });
                       ref
-                          .read(dateOperationsProvider.notifier)
+                          .read(dateOperationsNotifierProvider.notifier)
                           .setOperationType(newSelection.first);
                     },
                   ),
@@ -259,6 +267,8 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                     flex: 2,
                     child: TextField(
                       focusNode: numberFocusNode,
+                      controller: numberController,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         labelText: localizations.number,
                         border: OutlineInputBorder(),
@@ -282,7 +292,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                         border: OutlineInputBorder(),
                         isDense: true,
                       ),
-                      initialValue: _selectedTimeUnit,
+                      initialValue: dateOperations.timeUnit,
                       items: TimeUnit.values.map((unit) {
                         return DropdownMenuItem<TimeUnit>(
                           value: unit,
@@ -292,10 +302,12 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                       onChanged: (TimeUnit? newValue) {
                         if (newValue != null) {
                           setState(() {
-                            _selectedTimeUnit = newValue;
                             _dateCalculator = null;
                             isCalculated = false;
                           });
+                          ref
+                              .read(dateOperationsNotifierProvider.notifier)
+                              .setTimeUnit(newValue);
                         }
                       },
                     ),
@@ -305,7 +317,9 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                         ? () async {
                             numberFocusNode.unfocus();
                             _updateTimeValue(ref, _currentNumber);
-                            final dtOp = ref.read(dateOperationsProvider);
+                            final dtOp = ref.read(
+                              dateOperationsNotifierProvider,
+                            );
 
                             setState(() {
                               isCalculated = true;
@@ -327,7 +341,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                   initialDate: userDate,
                                   operationType: dtOp.operationType,
                                   totalHours: dtOp.totalHours,
-                                  timeUnit: _selectedTimeUnit,
+                                  timeUnit: dtOp.timeUnit,
                                   timestamp: DateTime.now(),
                                 );
                             _scrollToBottom();
@@ -383,7 +397,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                           _makeLabel(
                             null,
                             ref
-                                .read(dateOperationsProvider.notifier)
+                                .read(dateOperationsNotifierProvider.notifier)
                                 .formatHoursToString(),
                           ),
                           Wrap(

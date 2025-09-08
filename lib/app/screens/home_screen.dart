@@ -48,7 +48,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [HomeTabScreen(), HistoryTabScreen()],
+        children: [
+          HomeTabScreen(),
+          HistoryTabScreen(
+            onNavigateToHomeTab: () {
+              _tabController.animateTo(0);
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: TabBar(
         indicatorColor: Colors.black,
