@@ -34,7 +34,6 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
 
     final notifier = ref.read(dateOperationsNotifierProvider.notifier);
     final dateOperations = ref.watch(dateOperationsNotifierProvider);
-    final operationType = dateOperations.operationType;
     final timeUnit = dateOperations.timeUnit;
 
     // Limpar valores anteriores
