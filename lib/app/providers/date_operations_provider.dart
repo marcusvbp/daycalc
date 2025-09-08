@@ -15,6 +15,10 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
     state = state.copyWith(operationType: type);
   }
 
+  void setIsHistoryRestored(bool isRestored) {
+    state = state.copyWith(isHistoryRestored: isRestored);
+  }
+
   void setTimeUnit(TimeUnit unit) {
     state = state.copyWith(timeUnit: unit);
   }
@@ -105,6 +109,7 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
     state = DateOperationsState(
       operationType: state.operationType,
       timeUnit: state.timeUnit,
+      isHistoryRestored: state.isHistoryRestored,
     );
   }
 
@@ -123,14 +128,22 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
   }
 
   // Getter que retorna um map com conversões das horas totais para diferentes unidades
-  Map<String, double> get timeConversions {
+  Map<String, num> get timeConversions {
     final double totalHours = state.totalHours.toDouble();
 
     return {
-      'hours': double.parse(totalHours.toStringAsFixed(1)),
-      'days': double.parse((totalHours / 24).toStringAsFixed(1)),
-      'weeks': double.parse((totalHours / (24 * 7)).toStringAsFixed(1)),
-      'months': double.parse((totalHours / (24 * 30)).toStringAsFixed(1)),
+      'hours': totalHours % 1 == 0
+          ? totalHours.toInt()
+          : double.parse(totalHours.toStringAsFixed(1)),
+      'days': (totalHours / 24) % 1 == 0
+          ? (totalHours / 24).toInt()
+          : double.parse((totalHours / 24).toStringAsFixed(1)),
+      'weeks': (totalHours / (24 * 7)) % 1 == 0
+          ? (totalHours / (24 * 7)).toInt()
+          : double.parse((totalHours / (24 * 7)).toStringAsFixed(1)),
+      'months': (totalHours / (24 * 30)) % 1 == 0
+          ? (totalHours / (24 * 30)).toInt()
+          : double.parse((totalHours / (24 * 30)).toStringAsFixed(1)),
     };
   }
 }
@@ -139,22 +152,26 @@ class DateOperationsState {
   final OperationType operationType;
   final int totalHours;
   final TimeUnit timeUnit;
+  final bool isHistoryRestored;
 
   const DateOperationsState({
     this.operationType = OperationType.add,
     this.totalHours = 0,
     this.timeUnit = TimeUnit.days,
+    this.isHistoryRestored = false,
   });
 
   DateOperationsState copyWith({
     OperationType? operationType,
     int? totalHours,
     TimeUnit? timeUnit,
+    bool? isHistoryRestored,
   }) {
     return DateOperationsState(
       operationType: operationType ?? this.operationType,
       totalHours: totalHours ?? this.totalHours,
       timeUnit: timeUnit ?? this.timeUnit,
+      isHistoryRestored: isHistoryRestored ?? this.isHistoryRestored,
     );
   }
 
@@ -177,10 +194,14 @@ class DateOperationsState {
     return other is DateOperationsState &&
         other.operationType == operationType &&
         other.totalHours == totalHours &&
-        other.timeUnit == timeUnit;
+        other.timeUnit == timeUnit &&
+        other.isHistoryRestored == isHistoryRestored;
   }
 
   @override
   int get hashCode =>
-      operationType.hashCode ^ totalHours.hashCode ^ timeUnit.hashCode;
+      operationType.hashCode ^
+      totalHours.hashCode ^
+      timeUnit.hashCode ^
+      isHistoryRestored.hashCode;
 }

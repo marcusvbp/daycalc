@@ -138,6 +138,7 @@ class HistoryTabScreen extends ConsumerWidget {
           dateOpsNotifier.setOperationType(record.operationType);
           dateOpsNotifier.setTotalHours(record.totalHours);
           dateOpsNotifier.setTimeUnit(record.timeUnit);
+          dateOpsNotifier.setIsHistoryRestored(true);
 
           // 3. Navegar para a tab home
           onNavigateToHomeTab?.call();

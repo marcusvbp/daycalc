@@ -73,19 +73,20 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     }
   }
 
-  Widget _makeLabel(String? label, String value) => Text.rich(
-    TextSpan(
-      children: [
-        if (label != null)
-          TextSpan(
-            text: '$label: ',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        TextSpan(text: value),
-      ],
-      style: Theme.of(context).textTheme.bodyLarge,
-    ),
-  );
+  Widget _makeLabel(String? label, String value, {bool showSeparator = true}) =>
+      Text.rich(
+        TextSpan(
+          children: [
+            if (label != null)
+              TextSpan(
+                text: '$label${showSeparator ? ': ' : ''} ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            TextSpan(text: value),
+          ],
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      );
 
   void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -100,7 +101,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   @override
   void didChangeDependencies() {
     final dateOperations = ref.read(dateOperationsNotifierProvider);
-    if (dateOperations.totalTimeByTimeUnit != 0) {
+    if (dateOperations.isHistoryRestored) {
       setState(() {
         _currentNumber = dateOperations.totalTimeByTimeUnit;
         numberController.text = dateOperations.totalTimeByTimeUnit.toString();
@@ -331,18 +332,24 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                 )!.localeName,
                               );
                             });
-                            ref
-                                .read(
-                                  dateOperationsHistoryNotifierProvider
-                                      .notifier,
-                                )
-                                .addOperation(
-                                  initialDate: userDate,
-                                  operationType: dtOp.operationType,
-                                  totalHours: dtOp.totalHours,
-                                  timeUnit: dtOp.timeUnit,
-                                  timestamp: DateTime.now(),
-                                );
+                            if (!dtOp.isHistoryRestored) {
+                              ref
+                                  .read(
+                                    dateOperationsHistoryNotifierProvider
+                                        .notifier,
+                                  )
+                                  .addOperation(
+                                    initialDate: userDate,
+                                    operationType: dtOp.operationType,
+                                    totalHours: dtOp.totalHours,
+                                    timeUnit: dtOp.timeUnit,
+                                    timestamp: DateTime.now(),
+                                  );
+                            } else {
+                              ref
+                                  .read(dateOperationsNotifierProvider.notifier)
+                                  .setIsHistoryRestored(false);
+                            }
                             _scrollToBottom();
                           }
                         : null,
@@ -394,10 +401,11 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                             _dateCalculator!.formattedDate,
                           ),
                           _makeLabel(
-                            null,
+                            dateOperations.operationType.symbol,
                             ref
                                 .read(dateOperationsNotifierProvider.notifier)
                                 .formatHoursToString(),
+                            showSeparator: false,
                           ),
                           Wrap(
                             spacing: 8,
