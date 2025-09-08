@@ -3,8 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_date_provider.g.dart';
 
-@riverpod
-class UserDate extends _$UserDate {
+@Riverpod(keepAlive: true)
+class UserDateNotifier extends _$UserDateNotifier {
   @override
   DateTime? build() {
     return null;
