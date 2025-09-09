@@ -62,8 +62,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         labelPadding: const EdgeInsets.only(bottom: 16),
         controller: _tabController,
         tabs: [
-          Tab(icon: const Icon(Icons.calculate), text: 'Calculadora'),
-          Tab(icon: const Icon(Icons.history), text: 'Histórico'),
+          Tab(
+            icon: const Icon(Icons.calculate),
+            text: localizations.calculator,
+          ),
+          Tab(icon: const Icon(Icons.history), text: localizations.history),
         ],
       ),
     );

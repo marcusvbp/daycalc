@@ -1,4 +1,5 @@
 import 'package:daycalc/app/enums/operation_type.dart';
+import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/models/date_operation_record.dart';
 import 'package:daycalc/app/providers/date_operations_history_provider.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
@@ -15,6 +16,7 @@ class HistoryTabScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final historyAsync = ref.watch(dateOperationsHistoryNotifierProvider);
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: historyAsync.when(
@@ -27,7 +29,7 @@ class HistoryTabScreen extends ConsumerWidget {
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
-                'Erro ao carregar histórico',
+                localizations.errorLoadingHistory,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 8),
@@ -40,7 +42,7 @@ class HistoryTabScreen extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () =>
                     ref.refresh(dateOperationsHistoryNotifierProvider),
-                child: const Text('Tentar novamente'),
+                child: Text(localizations.tryAgain),
               ),
             ],
           ),
@@ -51,7 +53,7 @@ class HistoryTabScreen extends ConsumerWidget {
             ? FloatingActionButton.extended(
                 onPressed: () => _showClearHistoryDialog(context, ref),
                 icon: const Icon(Icons.clear_all),
-                label: const Text('Limpar Histórico'),
+                label: Text(localizations.clearHistory),
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               )
@@ -67,6 +69,7 @@ class HistoryTabScreen extends ConsumerWidget {
     WidgetRef ref,
     List<DateOperationRecord> history,
   ) {
+    final localizations = AppLocalizations.of(context)!;
     if (history.isEmpty) {
       return Center(
         child: Column(
@@ -79,12 +82,12 @@ class HistoryTabScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Nenhuma operação registrada',
+              localizations.noHistory,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
             Text(
-              'As operações realizadas aparecerão aqui',
+              localizations.noHistoryMessage,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.outline,
               ),
@@ -121,6 +124,7 @@ class HistoryTabScreen extends ConsumerWidget {
   ) {
     final dateFormat = DateFormat('dd/MM/yyyy');
     final isAddOperation = record.operationType == OperationType.add;
+    final localizations = AppLocalizations.of(context)!;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -155,7 +159,7 @@ class HistoryTabScreen extends ConsumerWidget {
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
-          '${record.operationType.symbol} ${record.formatHoursToString()}',
+          '${record.operationType.symbol} ${record.formatHoursToString(localizations.localeName)}',
           style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: PopupMenuButton<String>(
@@ -165,13 +169,13 @@ class HistoryTabScreen extends ConsumerWidget {
             }
           },
           itemBuilder: (context) => [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'delete',
               child: Row(
                 children: [
                   Icon(Icons.delete, color: Colors.red),
                   SizedBox(width: 8),
-                  Text('Excluir'),
+                  Text(localizations.delete),
                 ],
               ),
             ),
@@ -217,11 +221,12 @@ class HistoryTabScreen extends ConsumerWidget {
     WidgetRef ref,
     DateOperationRecord record,
   ) {
+    final localizations = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Excluir Operação'),
-        content: Text('Tem certeza que deseja excluir a operação?'),
+        title: Text(localizations.deleteOperation),
+        content: Text(localizations.deleteOperationConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -234,10 +239,10 @@ class HistoryTabScreen extends ConsumerWidget {
                   .removeOperationRecord(record);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Operação excluída com sucesso')),
+                SnackBar(content: Text(localizations.deleteOperationSuccess)),
               );
             },
-            child: const Text('Excluir'),
+            child: Text(localizations.delete),
           ),
         ],
       ),

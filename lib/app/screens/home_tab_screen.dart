@@ -397,14 +397,16 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           _makeLabel(
-                            'Data Final',
+                            localizations.finalDate,
                             _dateCalculator!.formattedDate,
                           ),
                           _makeLabel(
                             dateOperations.operationType.symbol,
                             ref
                                 .read(dateOperationsNotifierProvider.notifier)
-                                .formatHoursToString(),
+                                .formatHoursToString(
+                                  AppLocalizations.of(context)!.localeName,
+                                ),
                             showSeparator: false,
                           ),
                           Wrap(
@@ -412,7 +414,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                             runSpacing: 8,
                             children: [
                               _makeLabel(
-                                'Intervalo',
+                                localizations.interval,
                                 timeConversions[showTimeUnit.name].toString(),
                               ),
                               SizedBox(
