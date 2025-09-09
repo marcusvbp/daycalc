@@ -1,5 +1,6 @@
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/enums/time_unit.dart';
+import 'package:daycalc/utils/format_hours_to_string.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'date_operations_provider.g.dart';
@@ -75,33 +76,9 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
     };
   }
 
-  String formatHoursToString() {
+  String formatHoursToString(String languageCode) {
     final units = formatHoursToUnits();
-    final List<String> parts = [];
-
-    if (units['years']! > 0) {
-      parts.add('${units['years']} ${units['years'] == 1 ? 'ano' : 'anos'}');
-    }
-    if (units['months']! > 0) {
-      parts.add('${units['months']} ${units['months'] == 1 ? 'mês' : 'meses'}');
-    }
-    if (units['weeks']! > 0) {
-      parts.add(
-        '${units['weeks']} ${units['weeks'] == 1 ? 'semana' : 'semanas'}',
-      );
-    }
-    if (units['days']! > 0) {
-      parts.add('${units['days']} ${units['days'] == 1 ? 'dia' : 'dias'}');
-    }
-    if (units['hours']! > 0) {
-      parts.add('${units['hours']} ${units['hours'] == 1 ? 'hora' : 'horas'}');
-    }
-
-    if (parts.isEmpty) {
-      return '0 horas';
-    }
-
-    return parts.join(', ');
+    return hoursToString(units, languageCode);
   }
 
   // Métodos para limpar e resetar
