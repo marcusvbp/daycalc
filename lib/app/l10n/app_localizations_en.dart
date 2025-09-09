@@ -112,4 +112,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectedDate => 'Selected date';
+
+  @override
+  String get calculator => 'Calculator';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String get finalDate => 'Final date';
+
+  @override
+  String get interval => 'Interval';
+
+  @override
+  String get errorLoadingHistory => 'Error loading history';
+
+  @override
+  String get tryAgain => 'Try again';
+
+  @override
+  String get clearHistory => 'Clear history';
+
+  @override
+  String get clearHistoryConfirmation =>
+      'Are you sure you want to clear all operation history? This action cannot be undone.';
+
+  @override
+  String get clearHistorySuccess => 'History cleared successfully';
+
+  @override
+  String get clearHistoryError => 'Error clearing history';
+
+  @override
+  String get noHistory => 'No history found';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get noHistoryMessage => 'The operations performed will appear here';
+
+  @override
+  String get deleteOperation => 'Delete Operation';
+
+  @override
+  String get deleteOperationConfirmation =>
+      'Are you sure you want to delete the operation?';
+
+  @override
+  String get deleteOperationSuccess => 'Operation deleted successfully';
 }

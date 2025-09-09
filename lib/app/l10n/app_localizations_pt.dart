@@ -112,4 +112,54 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get selectedDate => 'Data selecionada';
+
+  @override
+  String get calculator => 'Calculadora';
+
+  @override
+  String get history => 'Histórico';
+
+  @override
+  String get finalDate => 'Data final';
+
+  @override
+  String get interval => 'Intervalo';
+
+  @override
+  String get errorLoadingHistory => 'Erro ao carregar histórico';
+
+  @override
+  String get tryAgain => 'Tentar novamente';
+
+  @override
+  String get clearHistory => 'Limpar histórico';
+
+  @override
+  String get clearHistoryConfirmation =>
+      'Tem certeza que deseja limpar todo o histórico de operações? Esta ação não pode ser desfeita.';
+
+  @override
+  String get clearHistorySuccess => 'Histórico limpo com sucesso';
+
+  @override
+  String get clearHistoryError => 'Erro ao limpar histórico';
+
+  @override
+  String get noHistory => 'Nenhum histórico encontrado';
+
+  @override
+  String get delete => 'Excluir';
+
+  @override
+  String get noHistoryMessage => 'As operações realizadas aparecerão aqui';
+
+  @override
+  String get deleteOperation => 'Excluir Operação';
+
+  @override
+  String get deleteOperationConfirmation =>
+      'Tem certeza que deseja excluir a operação?';
+
+  @override
+  String get deleteOperationSuccess => 'Operação excluída com sucesso';
 }

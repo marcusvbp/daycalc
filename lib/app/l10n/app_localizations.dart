@@ -303,6 +303,38 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected date'**
   String get selectedDate;
+
+  String get calculator;
+
+  String get history;
+
+  String get finalDate;
+
+  String get interval;
+
+  String get errorLoadingHistory;
+
+  String get tryAgain;
+
+  String get clearHistory;
+
+  String get clearHistoryConfirmation;
+
+  String get clearHistorySuccess;
+
+  String get clearHistoryError;
+
+  String get noHistory;
+
+  String get delete;
+
+  String get noHistoryMessage;
+
+  String get deleteOperation;
+
+  String get deleteOperationConfirmation;
+
+  String get deleteOperationSuccess;
 }
 
 class _AppLocalizationsDelegate
