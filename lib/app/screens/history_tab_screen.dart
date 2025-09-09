@@ -122,9 +122,11 @@ class HistoryTabScreen extends ConsumerWidget {
     DateOperationRecord record,
     int index,
   ) {
-    final dateFormat = DateFormat('dd/MM/yyyy');
     final isAddOperation = record.operationType == OperationType.add;
     final localizations = AppLocalizations.of(context)!;
+    final dateFormat = DateFormat(
+      localizations.localeName == 'en_US' ? 'MM/dd/yyyy' : 'dd/MM/yyyy',
+    );
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),

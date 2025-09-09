@@ -27,7 +27,10 @@ class UserDateNotifier extends _$UserDateNotifier {
       return '';
     }
 
-    final formatter = DateFormat('dd/MM/yyyy', locale);
+    final formatter = DateFormat(
+      locale == 'en_US' ? 'MM/dd/yyyy' : 'dd/MM/yyyy',
+      locale,
+    );
     return formatter.format(state!);
   }
 }
