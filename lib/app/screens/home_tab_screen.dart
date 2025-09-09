@@ -1,4 +1,5 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:daycalc/app/config/constants.dart';
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/enums/time_unit.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
@@ -9,6 +10,7 @@ import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class HomeTabScreen extends ConsumerStatefulWidget {
   const HomeTabScreen({super.key});
@@ -25,6 +27,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   FocusNode numberFocusNode = FocusNode();
   final TextEditingController numberController = TextEditingController();
   late final ScrollController scrollController = ScrollController();
+  InterstitialAd? _interstitialAd;
 
   void _updateTimeValue(WidgetRef ref, int number) {
     final num = number < 0 ? number * -1 : number;
@@ -96,6 +99,31 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
         curve: Curves.easeInOut,
       );
     });
+  }
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: admobId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          // Called when an ad is successfully received.
+          debugPrint('Ad was loaded.');
+          // Keep a reference to the ad so you can show it later.
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          // Called when an ad request failed.
+          debugPrint('Ad failed to load with error: $error');
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    _loadInterstitialAd();
+    super.initState();
   }
 
   @override
@@ -316,6 +344,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                     onPressed: _currentNumber != 0 && userDate != null
                         ? () async {
                             numberFocusNode.unfocus();
+                            _interstitialAd?.show();
                             _updateTimeValue(ref, _currentNumber);
                             final dtOp = ref.read(
                               dateOperationsNotifierProvider,

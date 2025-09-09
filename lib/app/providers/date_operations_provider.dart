@@ -1,6 +1,6 @@
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/enums/time_unit.dart';
-import 'package:daycalc/utils/format_hours_to_string.dart';
+import 'package:daycalc/app/utils/format_hours_to_string.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'date_operations_provider.g.dart';

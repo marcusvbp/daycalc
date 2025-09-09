@@ -12,13 +12,13 @@ class LocalePreferenceService {
     final localeString = prefs.getString(_localeKey);
 
     if (localeString == null) {
-      return AppLocale.pt;
+      return AppLocale.en;
     }
 
     try {
       return AppLocale.values.firstWhere((e) => e.toString() == localeString);
     } catch (e) {
-      return AppLocale.pt;
+      return AppLocale.en;
     }
   }
 
