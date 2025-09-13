@@ -6,22 +6,59 @@ part of 'date_operations_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dateOperationsNotifierHash() =>
-    r'f27431d5b90ff9abbf3575b82e1ba3f2fa58b2aa';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [DateOperationsNotifier].
 @ProviderFor(DateOperationsNotifier)
-final dateOperationsNotifierProvider =
-    NotifierProvider<DateOperationsNotifier, DateOperationsState>.internal(
-      DateOperationsNotifier.new,
-      name: r'dateOperationsNotifierProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$dateOperationsNotifierHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const dateOperationsProvider = DateOperationsNotifierProvider._();
 
-typedef _$DateOperationsNotifier = Notifier<DateOperationsState>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class DateOperationsNotifierProvider
+    extends $NotifierProvider<DateOperationsNotifier, DateOperationsState> {
+  const DateOperationsNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dateOperationsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$dateOperationsNotifierHash();
+
+  @$internal
+  @override
+  DateOperationsNotifier create() => DateOperationsNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DateOperationsState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DateOperationsState>(value),
+    );
+  }
+}
+
+String _$dateOperationsNotifierHash() =>
+    r'c6cf5dd43ce2412c940b94040872fab37906d83a';
+
+abstract class _$DateOperationsNotifier extends $Notifier<DateOperationsState> {
+  DateOperationsState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<DateOperationsState, DateOperationsState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<DateOperationsState, DateOperationsState>,
+              DateOperationsState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
