@@ -26,8 +26,8 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeModeAsync = ref.watch(themeModeNotifierProvider);
-    final localeAsync = ref.watch(localeNotifierProvider);
+    final themeModeAsync = ref.watch(themeModeProvider);
+    final localeAsync = ref.watch(localeProvider);
 
     return themeModeAsync.when(
       data: (themeMode) {
