@@ -12,21 +12,8 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,27 +33,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
         ],
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: IndexedStack(
+        index: _currentIndex,
         children: [
           HomeTabScreen(),
           HistoryTabScreen(
             onNavigateToHomeTab: () {
-              _tabController.animateTo(0);
+              setState(() {
+                _currentIndex = 0;
+              });
             },
           ),
         ],
       ),
-      bottomNavigationBar: TabBar(
-        indicatorColor: Colors.black,
-        labelPadding: const EdgeInsets.only(bottom: 16),
-        controller: _tabController,
-        tabs: [
-          Tab(
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(
             icon: const Icon(Icons.calculate),
-            text: localizations.calculator,
+            label: localizations.calculator,
           ),
-          Tab(icon: const Icon(Icons.history), text: localizations.history),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.history),
+            label: localizations.history,
+          ),
         ],
       ),
     );
