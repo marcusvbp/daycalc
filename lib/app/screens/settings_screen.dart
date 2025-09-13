@@ -11,8 +11,8 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
-    final themeModeAsync = ref.watch(themeModeNotifierProvider);
-    final localeAsync = ref.watch(localeNotifierProvider);
+    final themeModeAsync = ref.watch(themeModeProvider);
+    final localeAsync = ref.watch(localeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -133,11 +133,11 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _handleThemeChange(WidgetRef ref, AppThemeMode value) {
-    ref.read(themeModeNotifierProvider.notifier).setThemeMode(value);
+    ref.read(themeModeProvider.notifier).setThemeMode(value);
   }
 
   void _handleLocaleChange(WidgetRef ref, AppLocale value) {
-    ref.read(localeNotifierProvider.notifier).setLocale(value);
+    ref.read(localeProvider.notifier).setLocale(value);
   }
 
   AppLocale _getAppLocaleFromLocale(Locale locale) {

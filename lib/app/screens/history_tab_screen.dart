@@ -15,7 +15,7 @@ class HistoryTabScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final historyAsync = ref.watch(dateOperationsHistoryNotifierProvider);
+    final historyAsync = ref.watch(dateOperationsHistoryProvider);
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -40,8 +40,7 @@ class HistoryTabScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () =>
-                    ref.refresh(dateOperationsHistoryNotifierProvider),
+                onPressed: () => ref.refresh(dateOperationsHistoryProvider),
                 child: Text(localizations.tryAgain),
               ),
             ],
@@ -135,12 +134,10 @@ class HistoryTabScreen extends ConsumerWidget {
         onTap: () {
           // Popular dados do record no home_tab_screen
           // 1. Definir a data inicial
-          ref.read(userDateNotifierProvider.notifier).add(record.initialDate);
+          ref.read(userDateProvider.notifier).add(record.initialDate);
 
           // 2. Definir o tipo de operação e total de horas
-          final dateOpsNotifier = ref.read(
-            dateOperationsNotifierProvider.notifier,
-          );
+          final dateOpsNotifier = ref.read(dateOperationsProvider.notifier);
           dateOpsNotifier.setOperationType(record.operationType);
           dateOpsNotifier.setTotalHours(record.totalHours);
           dateOpsNotifier.setTimeUnit(record.timeUnit);
@@ -203,9 +200,7 @@ class HistoryTabScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () {
-              ref
-                  .read(dateOperationsHistoryNotifierProvider.notifier)
-                  .clearHistory();
+              ref.read(dateOperationsHistoryProvider.notifier).clearHistory();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Histórico limpo com sucesso')),
@@ -237,7 +232,7 @@ class HistoryTabScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               ref
-                  .read(dateOperationsHistoryNotifierProvider.notifier)
+                  .read(dateOperationsHistoryProvider.notifier)
                   .removeOperationRecord(record);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(

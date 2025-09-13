@@ -35,8 +35,8 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
       _currentNumber = num;
     });
 
-    final notifier = ref.read(dateOperationsNotifierProvider.notifier);
-    final dateOperations = ref.watch(dateOperationsNotifierProvider);
+    final notifier = ref.read(dateOperationsProvider.notifier);
+    final dateOperations = ref.watch(dateOperationsProvider);
     final timeUnit = dateOperations.timeUnit;
 
     // Limpar valores anteriores
@@ -127,21 +127,6 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    final dateOperations = ref.read(dateOperationsNotifierProvider);
-    if (dateOperations.isHistoryRestored) {
-      setState(() {
-        _currentNumber = dateOperations.totalTimeByTimeUnit;
-        numberController.text = dateOperations.totalTimeByTimeUnit.toString();
-      });
-      Future.delayed(const Duration(milliseconds: 200), () {
-        _scrollToBottom();
-      });
-    }
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     scrollController.dispose();
     super.dispose();
@@ -149,12 +134,25 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userDate = ref.watch(userDateNotifierProvider);
+    final userDate = ref.watch(userDateProvider);
     final localizations = AppLocalizations.of(context)!;
-    final dateOperations = ref.watch(dateOperationsNotifierProvider);
+    final dateOperations = ref.watch(dateOperationsProvider);
     final timeConversions = ref
-        .read(dateOperationsNotifierProvider.notifier)
+        .read(dateOperationsProvider.notifier)
         .timeConversions;
+
+    ref.listen(dateOperationsProvider, (previous, next) {
+      if (next.isHistoryRestored) {
+        setState(() {
+          _currentNumber = next.totalTimeByTimeUnit;
+          numberController.text = next.totalTimeByTimeUnit.toString();
+        });
+        Future.delayed(const Duration(milliseconds: 200), () {
+          _scrollToBottom();
+          ref.read(dateOperationsProvider.notifier).setIsHistoryRestored(false);
+        });
+      }
+    });
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -203,9 +201,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                       isCalculated = false;
                       _dateCalculator = null;
                     });
-                    ref
-                        .read(userDateNotifierProvider.notifier)
-                        .add(dates.first);
+                    ref.read(userDateProvider.notifier).add(dates.first);
                     _scrollToBottom();
                   }
                 },
@@ -228,13 +224,13 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        '${localizations.selectedDate}: ${ref.read(userDateNotifierProvider.notifier).getFormattedDate(AppLocalizations.of(context)!.localeName)}',
+                        '${localizations.selectedDate}: ${ref.read(userDateProvider.notifier).getFormattedDate(AppLocalizations.of(context)!.localeName)}',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     IconButton(
                       onPressed: () {
-                        ref.read(userDateNotifierProvider.notifier).clear();
+                        ref.read(userDateProvider.notifier).clear();
                         setState(() {
                           _dateCalculator = null;
                           isCalculated = false;
@@ -287,7 +283,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                         isCalculated = false;
                       });
                       ref
-                          .read(dateOperationsNotifierProvider.notifier)
+                          .read(dateOperationsProvider.notifier)
                           .setOperationType(newSelection.first);
                     },
                   ),
@@ -334,7 +330,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                             isCalculated = false;
                           });
                           ref
-                              .read(dateOperationsNotifierProvider.notifier)
+                              .read(dateOperationsProvider.notifier)
                               .setTimeUnit(newValue);
                         }
                       },
@@ -346,9 +342,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                             numberFocusNode.unfocus();
                             _interstitialAd?.show();
                             _updateTimeValue(ref, _currentNumber);
-                            final dtOp = ref.read(
-                              dateOperationsNotifierProvider,
-                            );
+                            final dtOp = ref.read(dateOperationsProvider);
 
                             setState(() {
                               isCalculated = true;
@@ -363,10 +357,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                             });
                             if (!dtOp.isHistoryRestored) {
                               ref
-                                  .read(
-                                    dateOperationsHistoryNotifierProvider
-                                        .notifier,
-                                  )
+                                  .read(dateOperationsHistoryProvider.notifier)
                                   .addOperation(
                                     initialDate: userDate,
                                     operationType: dtOp.operationType,
@@ -376,7 +367,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                   );
                             } else {
                               ref
-                                  .read(dateOperationsNotifierProvider.notifier)
+                                  .read(dateOperationsProvider.notifier)
                                   .setIsHistoryRestored(false);
                             }
                             _scrollToBottom();
@@ -432,7 +423,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                           _makeLabel(
                             dateOperations.operationType.symbol,
                             ref
-                                .read(dateOperationsNotifierProvider.notifier)
+                                .read(dateOperationsProvider.notifier)
                                 .formatHoursToString(
                                   AppLocalizations.of(context)!.localeName,
                                 ),
