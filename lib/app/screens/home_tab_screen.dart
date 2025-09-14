@@ -63,6 +63,19 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     }
   }
 
+  int _getNumericValueFromDuration(Duration duration, TimeUnit timeUnit) {
+    switch (timeUnit) {
+      case TimeUnit.hours:
+        return duration.inHours;
+      case TimeUnit.days:
+        return duration.inDays;
+      case TimeUnit.weeks:
+        return duration.inDays ~/ 7;
+      case TimeUnit.months:
+        return (duration.inDays / 30).floor();
+    }
+  }
+
   String _getTimeUnitLabel(TimeUnit unit, AppLocalizations localizations) {
     switch (unit) {
       case TimeUnit.hours:
@@ -144,8 +157,11 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     ref.listen(dateOperationsProvider, (previous, next) {
       if (next.isHistoryRestored) {
         setState(() {
-          _currentNumber = next.totalTimeByTimeUnit;
-          numberController.text = next.totalTimeByTimeUnit.toString();
+          _currentNumber = _getNumericValueFromDuration(
+            next.totalTimeByTimeUnit,
+            next.timeUnit,
+          );
+          numberController.text = _currentNumber.toString();
         });
         Future.delayed(const Duration(milliseconds: 200), () {
           _scrollToBottom();
@@ -348,7 +364,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                               isCalculated = true;
                               _dateCalculator = DateCalculator(
                                 date: userDate,
-                                hours: dtOp.totalHours,
+                                hours: dtOp.interval.inHours,
                                 operationType: dtOp.operationType,
                                 languageCode: AppLocalizations.of(
                                   context,
@@ -361,7 +377,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                   .addOperation(
                                     initialDate: userDate,
                                     operationType: dtOp.operationType,
-                                    totalHours: dtOp.totalHours,
+                                    interval: dtOp.interval,
                                     timeUnit: dtOp.timeUnit,
                                     timestamp: DateTime.now(),
                                   );
@@ -424,7 +440,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                             dateOperations.operationType.symbol,
                             ref
                                 .read(dateOperationsProvider.notifier)
-                                .formatHoursToString(
+                                .formatDurationToString(
                                   AppLocalizations.of(context)!.localeName,
                                 ),
                             showSeparator: false,

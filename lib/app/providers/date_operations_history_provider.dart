@@ -21,7 +21,7 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
   /// Adiciona uma nova operação ao histórico
   Future<void> addOperation({
     required OperationType operationType,
-    required int totalHours,
+    required Duration interval,
     required TimeUnit timeUnit,
     required DateTime initialDate,
     DateTime? timestamp,
@@ -33,7 +33,7 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
       // Cria o novo registro
       final record = DateOperationRecord(
         operationType: operationType,
-        totalHours: totalHours,
+        interval: interval,
         timeUnit: timeUnit,
         initialDate: initialDate,
         timestamp: timestamp ?? DateTime.now(),
@@ -154,20 +154,23 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
   }
 
   /// Obtém o total de horas por tipo de operação
-  Map<OperationType, int> getTotalHoursByType() {
+  Map<OperationType, Duration> getTotalDurationByType() {
     final currentState = state;
     if (currentState is! AsyncData<List<DateOperationRecord>>) {
-      return {OperationType.add: 0, OperationType.subtract: 0};
+      return {
+        OperationType.add: Duration.zero,
+        OperationType.subtract: Duration.zero,
+      };
     }
 
-    final Map<OperationType, int> totals = {
-      OperationType.add: 0,
-      OperationType.subtract: 0,
+    final Map<OperationType, Duration> totals = {
+      OperationType.add: Duration.zero,
+      OperationType.subtract: Duration.zero,
     };
 
     for (final record in currentState.value) {
       totals[record.operationType] =
-          totals[record.operationType]! + record.totalHours;
+          totals[record.operationType]! + record.interval;
     }
 
     return totals;
@@ -179,9 +182,9 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
     if (currentState is! AsyncData<List<DateOperationRecord>>) {
       return {
         'totalOperations': 0,
-        'totalAddHours': 0,
-        'totalSubtractHours': 0,
-        'netHours': 0,
+        'totalAddDuration': Duration.zero,
+        'totalSubtractDuration': Duration.zero,
+        'netDuration': Duration.zero,
         'firstOperation': null,
         'lastOperation': null,
       };
@@ -191,23 +194,24 @@ class DateOperationsHistoryNotifier extends _$DateOperationsHistoryNotifier {
     if (history.isEmpty) {
       return {
         'totalOperations': 0,
-        'totalAddHours': 0,
-        'totalSubtractHours': 0,
-        'netHours': 0,
+        'totalAddDuration': Duration.zero,
+        'totalSubtractDuration': Duration.zero,
+        'netDuration': Duration.zero,
         'firstOperation': null,
         'lastOperation': null,
       };
     }
 
-    final totals = getTotalHoursByType();
+    final totals = getTotalDurationByType();
     final sortedByDate = List<DateOperationRecord>.from(history)
       ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     return {
       'totalOperations': history.length,
-      'totalAddHours': totals[OperationType.add]!,
-      'totalSubtractHours': totals[OperationType.subtract]!,
-      'netHours': totals[OperationType.add]! - totals[OperationType.subtract]!,
+      'totalAddDuration': totals[OperationType.add]!,
+      'totalSubtractDuration': totals[OperationType.subtract]!,
+      'netDuration':
+          totals[OperationType.add]! - totals[OperationType.subtract]!,
       'firstOperation': sortedByDate.first,
       'lastOperation': sortedByDate.last,
     };

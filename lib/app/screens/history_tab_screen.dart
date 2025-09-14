@@ -136,10 +136,10 @@ class HistoryTabScreen extends ConsumerWidget {
           // 1. Definir a data inicial
           ref.read(userDateProvider.notifier).add(record.initialDate);
 
-          // 2. Definir o tipo de operação e total de horas
+          // 2. Definir o tipo de operação e duração
           final dateOpsNotifier = ref.read(dateOperationsProvider.notifier);
           dateOpsNotifier.setOperationType(record.operationType);
-          dateOpsNotifier.setTotalHours(record.totalHours);
+          dateOpsNotifier.setInterval(record.interval);
           dateOpsNotifier.setTimeUnit(record.timeUnit);
           dateOpsNotifier.setIsHistoryRestored(true);
 
@@ -158,7 +158,7 @@ class HistoryTabScreen extends ConsumerWidget {
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
-          '${record.operationType.symbol} ${record.formatHoursToString(localizations.localeName)}',
+          '${record.operationType.symbol} ${record.formatDurationToString(localizations.localeName)}',
           style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: PopupMenuButton<String>(

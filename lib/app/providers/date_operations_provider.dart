@@ -24,36 +24,36 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
     state = state.copyWith(timeUnit: unit);
   }
 
-  void setTotalHours(int hours) {
-    state = state.copyWith(totalHours: hours);
+  void setInterval(Duration duration) {
+    state = state.copyWith(interval: duration);
   }
 
-  // Métodos para adicionar horas a partir de diferentes unidades de tempo
+  // Métodos para adicionar tempo a partir de diferentes unidades de tempo
   void addHours(int hours) {
-    state = state.copyWith(totalHours: hours);
+    state = state.copyWith(interval: Duration(hours: hours));
   }
 
   void addDays(int days) {
-    state = state.copyWith(totalHours: days * 24);
+    state = state.copyWith(interval: Duration(days: days));
   }
 
   void addWeeks(int weeks) {
-    state = state.copyWith(totalHours: weeks * 24 * 7);
+    state = state.copyWith(interval: Duration(days: weeks * 7));
   }
 
   void addMonths(int months) {
     // Considerando 30 dias por mês em média
-    state = state.copyWith(totalHours: (months * 24 * 30.44).toInt());
+    state = state.copyWith(interval: Duration(days: (months * 30.44).round()));
   }
 
   void addYears(int years) {
     // Considerando 365 dias por ano
-    state = state.copyWith(totalHours: years * 24 * 365);
+    state = state.copyWith(interval: Duration(days: years * 365));
   }
 
-  // Métodos para formatar o número de horas em diferentes unidades
-  Map<String, int> formatHoursToUnits() {
-    final int totalHours = state.totalHours.abs();
+  // Métodos para formatar a duração em diferentes unidades
+  Map<String, int> formatDurationToUnits() {
+    final int totalHours = state.interval.inHours.abs();
 
     final int years = totalHours ~/ (24 * 365);
     final int remainingHoursAfterYears = totalHours % (24 * 365);
@@ -76,8 +76,8 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
     };
   }
 
-  String formatHoursToString(String languageCode) {
-    final units = formatHoursToUnits();
+  String formatDurationToString(String languageCode) {
+    final units = formatDurationToUnits();
     return hoursToString(units, languageCode);
   }
 
@@ -98,15 +98,15 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
   DateTime applyOperationToDate(DateTime date) {
     switch (state.operationType) {
       case OperationType.add:
-        return date.add(Duration(hours: state.totalHours));
+        return date.add(state.interval);
       case OperationType.subtract:
-        return date.subtract(Duration(hours: state.totalHours));
+        return date.subtract(state.interval);
     }
   }
 
-  // Getter que retorna um map com conversões das horas totais para diferentes unidades
+  // Getter que retorna um map com conversões da duração para diferentes unidades
   Map<String, num> get timeConversions {
-    final double totalHours = state.totalHours.toDouble();
+    final double totalHours = state.interval.inHours.toDouble();
 
     return {
       'hours': totalHours % 1 == 0
@@ -127,41 +127,41 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
 
 class DateOperationsState {
   final OperationType operationType;
-  final int totalHours;
+  final Duration interval;
   final TimeUnit timeUnit;
   final bool isHistoryRestored;
 
   const DateOperationsState({
     this.operationType = OperationType.add,
-    this.totalHours = 0,
+    this.interval = Duration.zero,
     this.timeUnit = TimeUnit.days,
     this.isHistoryRestored = false,
   });
 
   DateOperationsState copyWith({
     OperationType? operationType,
-    int? totalHours,
+    Duration? interval,
     TimeUnit? timeUnit,
     bool? isHistoryRestored,
   }) {
     return DateOperationsState(
       operationType: operationType ?? this.operationType,
-      totalHours: totalHours ?? this.totalHours,
+      interval: interval ?? this.interval,
       timeUnit: timeUnit ?? this.timeUnit,
       isHistoryRestored: isHistoryRestored ?? this.isHistoryRestored,
     );
   }
 
-  int get totalTimeByTimeUnit {
+  Duration get totalTimeByTimeUnit {
     switch (timeUnit) {
       case TimeUnit.hours:
-        return totalHours;
+        return interval;
       case TimeUnit.days:
-        return totalHours ~/ 24;
+        return Duration(days: interval.inDays);
       case TimeUnit.weeks:
-        return totalHours ~/ (24 * 7);
+        return Duration(days: interval.inDays ~/ 7 * 7);
       case TimeUnit.months:
-        return totalHours ~/ (24 * 30);
+        return Duration(days: (interval.inDays / 30).floor() * 30);
     }
   }
 
@@ -170,7 +170,7 @@ class DateOperationsState {
     if (identical(this, other)) return true;
     return other is DateOperationsState &&
         other.operationType == operationType &&
-        other.totalHours == totalHours &&
+        other.interval == interval &&
         other.timeUnit == timeUnit &&
         other.isHistoryRestored == isHistoryRestored;
   }
@@ -178,7 +178,7 @@ class DateOperationsState {
   @override
   int get hashCode =>
       operationType.hashCode ^
-      totalHours.hashCode ^
+      interval.hashCode ^
       timeUnit.hashCode ^
       isHistoryRestored.hashCode;
 }

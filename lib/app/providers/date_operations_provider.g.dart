@@ -42,7 +42,7 @@ final class DateOperationsNotifierProvider
 }
 
 String _$dateOperationsNotifierHash() =>
-    r'c6cf5dd43ce2412c940b94040872fab37906d83a';
+    r'72b87daeee1f1000234769e7d6bf6fe9e255c942';
 
 abstract class _$DateOperationsNotifier extends $Notifier<DateOperationsState> {
   DateOperationsState build();

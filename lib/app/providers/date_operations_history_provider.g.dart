@@ -38,7 +38,7 @@ final class DateOperationsHistoryNotifierProvider
 }
 
 String _$dateOperationsHistoryNotifierHash() =>
-    r'8105beb97c385240062432c6b1e32721c50e6c33';
+    r'0c00586d69da5aa169cae3d55731e816b1d42081';
 
 abstract class _$DateOperationsHistoryNotifier
     extends $AsyncNotifier<List<DateOperationRecord>> {
