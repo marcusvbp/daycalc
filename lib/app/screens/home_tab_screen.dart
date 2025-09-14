@@ -183,11 +183,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             // Calendário embutido
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).dividerColor),
-                borderRadius: BorderRadius.circular(8),
-              ),
+            Card(
               child: CalendarDatePicker2(
                 config: CalendarDatePicker2Config(
                   calendarType: CalendarDatePicker2Type.single,
@@ -225,36 +221,36 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
             ),
             // Data selecionada
             if (userDate != null)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  spacing: 8,
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    Expanded(
-                      child: Text(
-                        '${localizations.selectedDate}: ${ref.read(userDateProvider.notifier).getFormattedDate(AppLocalizations.of(context)!.localeName)}',
-                        style: Theme.of(context).textTheme.bodyLarge,
+              Card(
+                clipBehavior: Clip.antiAlias,
+
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        ref.read(userDateProvider.notifier).clear();
-                        setState(() {
-                          _dateCalculator = null;
-                          isCalculated = false;
-                        });
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
-                  ],
+                      Expanded(
+                        child: Text(
+                          '${localizations.selectedDate}: ${ref.read(userDateProvider.notifier).getFormattedDate(AppLocalizations.of(context)!.localeName)}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          ref.read(userDateProvider.notifier).clear();
+                          setState(() {
+                            _dateCalculator = null;
+                            isCalculated = false;
+                          });
+                        },
+                        icon: const Icon(Icons.clear),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             // Seção de operações de data
@@ -413,89 +409,90 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
             ),
             // Exibição do resultado formatado
             if (isCalculated)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  spacing: 12,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.access_time,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _makeLabel(
-                            localizations.finalDate,
-                            _dateCalculator!.formattedDate,
-                          ),
-                          _makeLabel(
-                            dateOperations.operationType.symbol,
-                            ref
-                                .read(dateOperationsProvider.notifier)
-                                .formatDurationToString(
-                                  AppLocalizations.of(context)!.localeName,
-                                ),
-                            showSeparator: false,
-                          ),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              _makeLabel(
-                                localizations.interval,
-                                timeConversions[showTimeUnit.name].toString(),
-                              ),
-                              SizedBox(
-                                height: 32,
-                                child: SegmentedButton<TimeUnit>(
-                                  selected: {showTimeUnit},
-                                  showSelectedIcon: false,
-                                  style: SegmentedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 5,
-                                      vertical: 10,
-                                    ),
-                                    alignment: Alignment(0, -.5),
-                                    visualDensity: VisualDensity.compact,
-                                    selectedBackgroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    selectedForegroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                  ),
-                                  onSelectionChanged:
-                                      (Set<TimeUnit> newSelection) {
-                                        setState(() {
-                                          showTimeUnit = newSelection.first;
-                                        });
-                                      },
-                                  segments: TimeUnit.values.map((unit) {
-                                    return ButtonSegment<TimeUnit>(
-                                      value: unit,
-                                      icon: null,
-                                      label: Text(
-                                        _getTimeUnitLabel(unit, localizations),
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+              Card(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    spacing: 12,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _makeLabel(
+                              localizations.finalDate,
+                              _dateCalculator!.formattedDate,
+                            ),
+                            _makeLabel(
+                              dateOperations.operationType.symbol,
+                              ref
+                                  .read(dateOperationsProvider.notifier)
+                                  .formatDurationToString(
+                                    AppLocalizations.of(context)!.localeName,
+                                  ),
+                              showSeparator: false,
+                            ),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                _makeLabel(
+                                  localizations.interval,
+                                  timeConversions[showTimeUnit.name].toString(),
+                                ),
+                                SizedBox(
+                                  height: 32,
+                                  child: SegmentedButton<TimeUnit>(
+                                    selected: {showTimeUnit},
+                                    showSelectedIcon: false,
+                                    style: SegmentedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                        vertical: 10,
+                                      ),
+                                      alignment: Alignment(0, -.5),
+                                      visualDensity: VisualDensity.compact,
+                                      selectedBackgroundColor: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                      selectedForegroundColor: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                    onSelectionChanged:
+                                        (Set<TimeUnit> newSelection) {
+                                          setState(() {
+                                            showTimeUnit = newSelection.first;
+                                          });
+                                        },
+                                    segments: TimeUnit.values.map((unit) {
+                                      return ButtonSegment<TimeUnit>(
+                                        value: unit,
+                                        icon: null,
+                                        label: Text(
+                                          _getTimeUnitLabel(
+                                            unit,
+                                            localizations,
+                                          ),
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],

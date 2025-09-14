@@ -15,10 +15,7 @@ class SettingsScreen extends ConsumerWidget {
     final localeAsync = ref.watch(localeProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.settings),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+      appBar: AppBar(title: Text(localizations.settings)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
