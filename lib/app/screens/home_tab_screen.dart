@@ -72,7 +72,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
       case TimeUnit.weeks:
         return duration.inDays ~/ 7;
       case TimeUnit.months:
-        return (duration.inDays / 30).floor();
+        return (duration.inDays / 30.44).floor();
     }
   }
 
@@ -305,11 +305,13 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                       focusNode: numberFocusNode,
                       controller: numberController,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 4,
                       decoration: InputDecoration(
                         labelText: localizations.number,
                         border: OutlineInputBorder(),
                         hintText: '0',
                         isDense: true,
+                        counter: const SizedBox.shrink(),
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) {

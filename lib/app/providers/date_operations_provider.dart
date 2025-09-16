@@ -42,7 +42,7 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
   }
 
   void addMonths(int months) {
-    // Considerando 30 dias por mês em média
+    // Considerando 30.44 dias por mês em média
     state = state.copyWith(interval: Duration(days: (months * 30.44).round()));
   }
 
@@ -58,7 +58,7 @@ class DateOperationsNotifier extends _$DateOperationsNotifier {
     final int years = totalHours ~/ (24 * 365);
     final int remainingHoursAfterYears = totalHours % (24 * 365);
 
-    final int months = remainingHoursAfterYears ~/ (24 * 30);
+    final int months = remainingHoursAfterYears ~/ (24 * 30.44);
     final int remainingHoursAfterMonths = remainingHoursAfterYears % (24 * 30);
 
     final int weeks = remainingHoursAfterMonths ~/ (24 * 7);
@@ -161,7 +161,7 @@ class DateOperationsState {
       case TimeUnit.weeks:
         return Duration(days: interval.inDays ~/ 7 * 7);
       case TimeUnit.months:
-        return Duration(days: (interval.inDays / 30).floor() * 30);
+        return Duration(days: (interval.inDays / 30.44).floor() * 30);
     }
   }
 
