@@ -162,6 +162,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
             next.timeUnit,
           );
           numberController.text = _currentNumber.toString();
+          isCalculated = false;
         });
         Future.delayed(const Duration(milliseconds: 200), () {
           _scrollToBottom();
@@ -362,7 +363,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                               isCalculated = true;
                               _dateCalculator = DateCalculator(
                                 date: userDate,
-                                hours: dtOp.interval.inHours,
+                                interval: dtOp.interval,
                                 operationType: dtOp.operationType,
                                 languageCode: AppLocalizations.of(
                                   context,

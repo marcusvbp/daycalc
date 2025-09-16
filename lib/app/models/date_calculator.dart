@@ -2,25 +2,23 @@ import 'package:daycalc/app/enums/operation_type.dart';
 
 class DateCalculator {
   final DateTime date;
-  final int hours;
+  final Duration interval;
   final OperationType operationType;
   final String languageCode;
 
   DateCalculator({
     required this.date,
-    required this.hours,
+    required this.interval,
     required this.operationType,
     required this.languageCode,
   });
 
   DateTime get calculatedDate {
-    final duration = Duration(hours: hours);
-
     switch (operationType) {
       case OperationType.add:
-        return date.add(duration);
+        return date.add(interval);
       case OperationType.subtract:
-        return date.subtract(duration);
+        return date.subtract(interval);
     }
   }
 
