@@ -72,7 +72,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
       case TimeUnit.weeks:
         return duration.inDays ~/ 7;
       case TimeUnit.months:
-        return (duration.inDays / 30.44).floor();
+        return (duration.inDays / 30.44).round();
     }
   }
 
@@ -158,7 +158,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
       if (next.isHistoryRestored) {
         setState(() {
           _currentNumber = _getNumericValueFromDuration(
-            next.totalTimeByTimeUnit,
+            next.interval,
             next.timeUnit,
           );
           numberController.text = _currentNumber.toString();

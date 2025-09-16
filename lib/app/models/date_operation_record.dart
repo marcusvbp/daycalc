@@ -25,7 +25,7 @@ class DateOperationRecord {
     final int years = totalHours ~/ (24 * 365);
     final int remainingHoursAfterYears = totalHours % (24 * 365);
 
-    final int months = remainingHoursAfterYears ~/ (24 * 30);
+    final int months = remainingHoursAfterYears ~/ (24 * 30.44);
     final int remainingHoursAfterMonths = remainingHoursAfterYears % (24 * 30);
 
     final int weeks = remainingHoursAfterMonths ~/ (24 * 7);

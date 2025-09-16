@@ -152,19 +152,6 @@ class DateOperationsState {
     );
   }
 
-  Duration get totalTimeByTimeUnit {
-    switch (timeUnit) {
-      case TimeUnit.hours:
-        return interval;
-      case TimeUnit.days:
-        return Duration(days: interval.inDays);
-      case TimeUnit.weeks:
-        return Duration(days: interval.inDays ~/ 7 * 7);
-      case TimeUnit.months:
-        return Duration(days: (interval.inDays / 30.44).floor() * 30);
-    }
-  }
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
