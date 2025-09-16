@@ -78,7 +78,7 @@ class DateRangeCalculator {
 
     return {
       'diasUteis': businessDays,
-      'finsDeSemanae': weekendDays,
+      'finsDeSemana': weekendDays,
       'totalDias': totalDays,
     };
   }
