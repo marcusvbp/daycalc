@@ -335,6 +335,12 @@ abstract class AppLocalizations {
   String get deleteOperationConfirmation;
 
   String get deleteOperationSuccess;
+
+  String get workingDays;
+
+  String get weekends;
+
+  String get notConsiderHolidays;
 }
 
 class _AppLocalizationsDelegate

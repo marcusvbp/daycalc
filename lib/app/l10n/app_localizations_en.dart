@@ -162,4 +162,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteOperationSuccess => 'Operation deleted successfully';
+
+  @override
+  String get workingDays => 'Working days';
+
+  @override
+  String get weekends => 'Weekend days';
+
+  @override
+  String get notConsiderHolidays => 'Not consider holidays';
 }

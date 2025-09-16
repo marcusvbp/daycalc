@@ -162,4 +162,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get deleteOperationSuccess => 'Operação excluída com sucesso';
+
+  @override
+  String get workingDays => 'Dias úteis';
+
+  @override
+  String get weekends => 'Dias de fim de semana';
+
+  @override
+  String get notConsiderHolidays => 'Não leva em conta feriados';
 }
