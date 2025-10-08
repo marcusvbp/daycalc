@@ -1,3 +1,4 @@
+import 'package:daycalc/app/config/constants.dart';
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/models/date_operation_record.dart';
@@ -6,21 +7,91 @@ import 'package:daycalc/app/providers/date_operations_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 
-class HistoryTabScreen extends ConsumerWidget {
+class HistoryTabScreen extends ConsumerStatefulWidget {
   final VoidCallback? onNavigateToHomeTab;
 
   const HistoryTabScreen({super.key, this.onNavigateToHomeTab});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HistoryTabScreen> createState() => _HistoryTabScreenState();
+}
+
+class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
+  NativeAd? _nativeAd;
+  bool _nativeAdIsLoaded = false;
+
+  void loadAd() {
+    _nativeAd = NativeAd(
+      adUnitId: admobHistoricoId,
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          debugPrint('$NativeAd loaded.');
+          setState(() {
+            _nativeAdIsLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          // Dispose the ad here to free resources.
+          debugPrint('$NativeAd failed to load: $error');
+          ad.dispose();
+        },
+      ),
+      request: const AdRequest(),
+      // Styling
+      nativeTemplateStyle: NativeTemplateStyle(
+        // Required: Choose a template.
+        templateType: TemplateType.small,
+        // Optional: Customize the ad's style.
+        mainBackgroundColor: Colors.white,
+        cornerRadius: 10.0,
+        callToActionTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.white,
+          backgroundColor: Colors.deepPurple,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        primaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.deepPurple,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        secondaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.blueGrey,
+          style: NativeTemplateFontStyle.bold,
+          size: 14.0,
+        ),
+        tertiaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.grey,
+          style: NativeTemplateFontStyle.normal,
+          size: 14.0,
+        ),
+      ),
+    )..load();
+  }
+
+  @override
+  void initState() {
+    loadAd();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nativeAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final historyAsync = ref.watch(dateOperationsHistoryProvider);
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: historyAsync.when(
-        data: (history) => _buildHistoryList(context, ref, history),
+        data: (history) => _buildHistoryList(context, history),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(
           child: Column(
@@ -50,9 +121,10 @@ class HistoryTabScreen extends ConsumerWidget {
       floatingActionButton: historyAsync.when(
         data: (history) => history.isNotEmpty
             ? FloatingActionButton.extended(
-                onPressed: () => _showClearHistoryDialog(context, ref),
+                onPressed: () => _showClearHistoryDialog(context),
                 icon: const Icon(Icons.clear_all),
                 label: Text(localizations.clearHistory),
+                tooltip: localizations.clearHistory,
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               )
@@ -60,12 +132,14 @@ class HistoryTabScreen extends ConsumerWidget {
         loading: () => null,
         error: (error, stackTrace) => null,
       ),
+      bottomNavigationBar: _nativeAdIsLoaded
+          ? SizedBox(width: 320, height: 90, child: AdWidget(ad: _nativeAd!))
+          : null,
     );
   }
 
   Widget _buildHistoryList(
     BuildContext context,
-    WidgetRef ref,
     List<DateOperationRecord> history,
   ) {
     final localizations = AppLocalizations.of(context)!;
@@ -109,7 +183,7 @@ class HistoryTabScreen extends ConsumerWidget {
           padding: index == sortedHistory.length - 1
               ? const EdgeInsets.only(bottom: 74)
               : EdgeInsets.zero,
-          child: _buildHistoryItem(context, ref, record, index),
+          child: _buildHistoryItem(context, record, index),
         );
       },
     );
@@ -117,7 +191,6 @@ class HistoryTabScreen extends ConsumerWidget {
 
   Widget _buildHistoryItem(
     BuildContext context,
-    WidgetRef ref,
     DateOperationRecord record,
     int index,
   ) {
@@ -144,7 +217,7 @@ class HistoryTabScreen extends ConsumerWidget {
           dateOpsNotifier.setIsHistoryRestored(true);
 
           // 3. Navegar para a tab home
-          onNavigateToHomeTab?.call();
+          widget.onNavigateToHomeTab?.call();
         },
         leading: CircleAvatar(
           backgroundColor: isAddOperation ? Colors.green : Colors.red,
@@ -164,7 +237,7 @@ class HistoryTabScreen extends ConsumerWidget {
         trailing: PopupMenuButton<String>(
           onSelected: (value) {
             if (value == 'delete') {
-              _showDeleteConfirmationDialog(context, ref, record);
+              _showDeleteConfirmationDialog(context, record);
             }
           },
           itemBuilder: (context) => [
@@ -185,7 +258,7 @@ class HistoryTabScreen extends ConsumerWidget {
     );
   }
 
-  void _showClearHistoryDialog(BuildContext context, WidgetRef ref) {
+  void _showClearHistoryDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -215,7 +288,6 @@ class HistoryTabScreen extends ConsumerWidget {
 
   void _showDeleteConfirmationDialog(
     BuildContext context,
-    WidgetRef ref,
     DateOperationRecord record,
   ) {
     final localizations = AppLocalizations.of(context)!;

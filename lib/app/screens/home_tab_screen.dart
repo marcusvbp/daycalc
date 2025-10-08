@@ -28,7 +28,8 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   FocusNode numberFocusNode = FocusNode();
   final TextEditingController numberController = TextEditingController();
   late final ScrollController scrollController = ScrollController();
-  InterstitialAd? _interstitialAd;
+  NativeAd? _nativeAd;
+  bool _nativeAdIsLoaded = false;
 
   void _updateTimeValue(WidgetRef ref, int number) {
     final num = number < 0 ? number * -1 : number;
@@ -115,33 +116,64 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     });
   }
 
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: admobId,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (InterstitialAd ad) {
-          // Called when an ad is successfully received.
-          debugPrint('Ad was loaded.');
-          // Keep a reference to the ad so you can show it later.
-          _interstitialAd = ad;
+  void loadAd() {
+    _nativeAd = NativeAd(
+      adUnitId: admobHomeId,
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          debugPrint('$NativeAd loaded.');
+          setState(() {
+            _nativeAdIsLoaded = true;
+          });
         },
-        onAdFailedToLoad: (LoadAdError error) {
-          // Called when an ad request failed.
-          debugPrint('Ad failed to load with error: $error');
+        onAdFailedToLoad: (ad, error) {
+          // Dispose the ad here to free resources.
+          debugPrint('$NativeAd failed to load: $error');
+          ad.dispose();
         },
       ),
-    );
+      request: const AdRequest(),
+      // Styling
+      nativeTemplateStyle: NativeTemplateStyle(
+        // Required: Choose a template.
+        templateType: TemplateType.small,
+        // Optional: Customize the ad's style.
+        mainBackgroundColor: Colors.white,
+        cornerRadius: 10.0,
+        callToActionTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.white,
+          backgroundColor: Colors.deepPurple,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        primaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.deepPurple,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        secondaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.blueGrey,
+          style: NativeTemplateFontStyle.bold,
+          size: 14.0,
+        ),
+        tertiaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.grey,
+          style: NativeTemplateFontStyle.normal,
+          size: 14.0,
+        ),
+      ),
+    )..load();
   }
 
   @override
   void initState() {
-    _loadInterstitialAd();
     super.initState();
+    loadAd();
   }
 
   @override
   void dispose() {
+    _nativeAd?.dispose();
     scrollController.dispose();
     super.dispose();
   }
@@ -221,6 +253,18 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                 },
               ),
             ),
+
+            if (_nativeAdIsLoaded)
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 320, // minimum recommended width
+                  minHeight: 90, // minimum recommended height
+                  maxWidth: 400,
+                  maxHeight: 200,
+                ),
+                child: AdWidget(ad: _nativeAd!),
+              ),
+
             // Data selecionada
             if (userDate != null)
               Card(
@@ -356,7 +400,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                     onPressed: _currentNumber != 0 && userDate != null
                         ? () async {
                             numberFocusNode.unfocus();
-                            _interstitialAd?.show();
+
                             _updateTimeValue(ref, _currentNumber);
                             final dtOp = ref.read(dateOperationsProvider);
 
