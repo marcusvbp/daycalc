@@ -20,3 +20,5 @@ const admobHistoricoIos = String.fromEnvironment('ADMOB_HISTORICO_IOS');
 final admobHistoricoId = Platform.isAndroid
     ? admobHistoricoAndroid
     : admobHistoricoIos;
+
+const openHolidaysApiUrl = String.fromEnvironment('OPEN_HOLIDAYS_API_URL');
