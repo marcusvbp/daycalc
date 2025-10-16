@@ -1,6 +1,7 @@
 import 'package:daycalc/app/config/routes.dart';
 import 'package:daycalc/app/config/theme.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
+import 'package:daycalc/app/providers/app_settings_provider.dart';
 import 'package:daycalc/app/providers/locale_provider.dart';
 import 'package:daycalc/app/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,9 @@ void main() async {
   // Garante que os widgets sejam inicializados
   WidgetsFlutterBinding.ensureInitialized();
 
-  await MobileAds.instance.initialize();
+  try {
+    await MobileAds.instance.initialize();
+  } catch (_) {}
 
   // Inicializa o SharedPreferences
   await SharedPreferences.getInstance();
@@ -29,45 +32,62 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeModeAsync = ref.watch(themeModeProvider);
     final localeAsync = ref.watch(localeProvider);
+    final appSettings = ref.watch(appSettingsProvider);
 
-    return themeModeAsync.when(
-      data: (themeMode) {
-        return localeAsync.when(
-          data: (locale) {
-            return MaterialApp.router(
-              title: 'DayCalc',
-              debugShowCheckedModeBanner: false,
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: _getThemeMode(themeMode),
-              routerConfig: router,
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
+    return appSettings.when(
+      data: (settings) {
+        
+        return themeModeAsync.when(
+          data: (themeMode) {
+            return localeAsync.when(
+              data: (locale) {
+                return MaterialApp.router(
+                  title: 'DayCalc',
+                  debugShowCheckedModeBanner: false,
+                  theme: lightTheme,
+                  darkTheme: darkTheme,
+                  themeMode: _getThemeMode(themeMode),
+                  routerConfig:
+                      buildRouter(showSettingsFirst: settings.showSettingsFirst),
+                  locale: locale,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                );
+              },
+              loading: () => const MaterialApp(
+                home: Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                ),
+              ),
+              error: (error, stackTrace) => MaterialApp(
+                home: Scaffold(
+                  body: Center(child: Text('Erro ao carregar idioma: $error')),
+                ),
+              ),
             );
           },
-          loading: () => const MaterialApp(
+          loading: () => MaterialApp(
             home: Scaffold(body: Center(child: CircularProgressIndicator())),
           ),
           error: (error, stackTrace) => MaterialApp(
             home: Scaffold(
-              body: Center(child: Text('Erro ao carregar idioma: $error')),
+              body: Center(child: Text('Erro ao carregar tema: $error')),
             ),
           ),
         );
       },
-      loading: () => MaterialApp(
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
-      ),
       error: (error, stackTrace) => MaterialApp(
         home: Scaffold(
-          body: Center(child: Text('Erro ao carregar tema: $error')),
+          body: Center(child: Text('Erro ao carregar configurações: $error')),
         ),
+      ),
+      loading: () => MaterialApp(
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
       ),
     );
   }
