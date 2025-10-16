@@ -19,6 +19,15 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     state = AsyncData(settings);
   }
 
+  Future<void> setValues({required bool showSettingsFirst}) async {
+    final settings =
+        state.value?.copyWith(showSettingsFirst: showSettingsFirst) ??
+        AppSettings(showSettingsFirst: showSettingsFirst);
+
+    await _storage.setSettings(settings);
+    state = AsyncData(settings);
+  }
+
   Future<void> clearSettings() async {
     await _storage.clearSettings();
     state = AsyncData(AppSettings());
