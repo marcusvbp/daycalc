@@ -341,6 +341,22 @@ abstract class AppLocalizations {
   String get weekends;
 
   String get notConsiderHolidays;
+
+  /// Localized language names for selection.
+  String get english;
+
+  String get spanish;
+
+  String get portuguese;
+
+  /// First settings screen title.
+  String get settingsWelcomeTitle;
+
+  /// First settings screen descriptive hint.
+  String get settingsSetupHint;
+
+  /// Generic error message prefix with details.
+  String errorMessage(String error);
 }
 
 class _AppLocalizationsDelegate

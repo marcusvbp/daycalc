@@ -171,4 +171,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get notConsiderHolidays => 'Não leva em conta feriados';
+
+  @override
+  String get english => 'Inglês';
+
+  @override
+  String get spanish => 'Espanhol';
+
+  @override
+  String get portuguese => 'Português';
+
+  @override
+  String get settingsWelcomeTitle => 'Obrigado por escolher o DayCalc!';
+
+  @override
+  String get settingsSetupHint =>
+      'Antes de prosseguir, por favor, configure as seguintes opções:';
+
+  @override
+  String errorMessage(String error) {
+    return 'Erro: $error';
+  }
 }
