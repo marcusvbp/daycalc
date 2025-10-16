@@ -357,6 +357,14 @@ abstract class AppLocalizations {
 
   /// Generic error message prefix with details.
   String errorMessage(String error);
+
+  String get continueLabel;
+
+  String get country;
+
+  String get selectCountry;
+
+  String get countryInfo;
 }
 
 class _AppLocalizationsDelegate

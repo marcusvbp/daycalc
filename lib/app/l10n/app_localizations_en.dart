@@ -192,4 +192,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String errorMessage(String error) {
     return 'Error: $error';
   }
+
+  @override
+  String get continueLabel => 'Continue';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get selectCountry => 'Select country';
+
+  @override
+  String get countryInfo =>
+      'We will use this information to get the list of national and school holidays.';
 }

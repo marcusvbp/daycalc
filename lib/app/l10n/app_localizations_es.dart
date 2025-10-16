@@ -192,4 +192,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String errorMessage(String error) {
     return 'Error: $error';
   }
+
+  @override
+  String get continueLabel => 'Continuar';
+
+  @override
+  String get country => 'País';
+
+  @override
+  String get selectCountry => 'Seleccione su país';
+
+  @override
+  String get countryInfo =>
+      'Utilizaremos esta información para obtener la lista de feriados nacionais y escolares.';
 }
