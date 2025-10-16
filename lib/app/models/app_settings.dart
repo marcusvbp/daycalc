@@ -7,4 +7,8 @@ class AppSettings {
 
   factory AppSettings.fromJson(Map<String, dynamic> json) =>
       AppSettings(showSettingsFirst: json['showSettingsFirst'] as bool);
+
+  AppSettings copyWith({bool? showSettingsFirst}) => AppSettings(
+    showSettingsFirst: showSettingsFirst ?? this.showSettingsFirst,
+  );
 }
