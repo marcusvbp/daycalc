@@ -77,7 +77,10 @@ class SettingsContent extends ConsumerWidget {
         ),
         const SizedBox(height: 24),
         // País
-        Text('País', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          localizations.country,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 16),
         Card(
           child: Padding(
@@ -86,7 +89,7 @@ class SettingsContent extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Selecione o seu país',
+                  localizations.selectCountry,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
@@ -111,7 +114,7 @@ class SettingsContent extends ConsumerWidget {
                         appSettingsAsync.when(
                           data: (settings) => settings.showSettingsFirst
                               ? Text(
-                                  'Utilizaremos esta informação para obter a lista de feriados nacionais e escolares.',
+                                  localizations.countryInfo,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 )
                               : SizedBox.shrink(),

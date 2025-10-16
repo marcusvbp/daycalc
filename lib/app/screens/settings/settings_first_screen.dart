@@ -40,7 +40,7 @@ class SettingsFirstScreen extends ConsumerWidget {
                       .setValues(showSettingsFirst: false);
                   context.pushReplacement('/');
                 },
-                child: Text('Continuar'),
+                child: Text(localizations.continueLabel),
               ),
             ),
           ],
