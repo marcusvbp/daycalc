@@ -13,7 +13,8 @@ class Country {
 
   factory Country.fromJson(Map<String, dynamic> json) {
     final namesJson = json['name'] as List<dynamic>? ?? const [];
-    final languagesJson = json['officialLanguages'] as List<dynamic>? ?? const [];
+    final languagesJson =
+        json['officialLanguages'] as List<dynamic>? ?? const [];
     return Country(
       isoCode: json['isoCode'] as String? ?? '',
       name: namesJson
@@ -24,8 +25,8 @@ class Country {
   }
 
   Map<String, dynamic> toJson() => {
-        'isoCode': isoCode,
-        'name': name.map((e) => e.toJson()).toList(),
-        'officialLanguages': officialLanguages,
-      };
+    'isoCode': isoCode,
+    'name': name.map((e) => e.toJson()).toList(),
+    'officialLanguages': officialLanguages,
+  };
 }
