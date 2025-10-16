@@ -1,6 +1,6 @@
 import 'package:daycalc/app/l10n/app_localizations.dart';
-import 'package:daycalc/app/screens/history_tab_screen.dart';
-import 'package:daycalc/app/screens/home_tab_screen.dart';
+import 'package:daycalc/app/screens/home/history_tab_screen.dart';
+import 'package:daycalc/app/screens/home/home_tab_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
