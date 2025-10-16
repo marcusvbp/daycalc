@@ -58,9 +58,13 @@ class CountrySelect extends StatelessWidget {
         )
         .toList();
 
+    final Country? selected = defaultValue != null
+        ? countries.firstWhere((e) => e.isoCode == defaultValue!.isoCode)
+        : null;
+
     return DropdownMenu<Country>(
       enabled: enabled,
-      initialSelection: defaultValue,
+      initialSelection: selected,
       hintText: hintText,
       label: label,
       enableFilter: true,
