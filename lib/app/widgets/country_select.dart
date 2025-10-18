@@ -1,5 +1,5 @@
+import 'package:daycalc/app/extensions/country_extension.dart';
 import 'package:daycalc/app/modules/open_holidays/models/country.dart';
-import 'package:daycalc/app/modules/open_holidays/models/localized_text.dart';
 import 'package:flutter/material.dart';
 
 typedef CountryChanged = void Function(Country? selected);
@@ -32,28 +32,13 @@ class CountrySelect extends StatelessWidget {
     this.enabled = true,
   });
 
-  String _displayName(BuildContext context, Country country) {
-    final preferred = Localizations.localeOf(
-      context,
-    ).languageCode.toLowerCase();
-    LocalizedText? match;
-    for (final n in country.name) {
-      if (n.language.toLowerCase().startsWith(preferred)) {
-        match = n;
-        break;
-      }
-    }
-    return match?.text ??
-        (country.name.isNotEmpty ? country.name.first.text : country.isoCode);
-  }
-
   @override
   Widget build(BuildContext context) {
     final entries = countries
         .map(
           (c) => DropdownMenuEntry<Country>(
             value: c,
-            label: _displayName(context, c),
+            label: c.displayName(context),
           ),
         )
         .toList();

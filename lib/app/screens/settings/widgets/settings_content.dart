@@ -4,8 +4,8 @@ import 'package:daycalc/app/providers/countries_collection_provider.dart';
 import 'package:daycalc/app/providers/country_preference_provider.dart';
 import 'package:daycalc/app/providers/locale_provider.dart';
 import 'package:daycalc/app/providers/theme_provider.dart';
-import 'package:daycalc/app/screens/settings/widgets/country_select.dart';
 import 'package:daycalc/app/services/locale_preference_service.dart';
+import 'package:daycalc/app/widgets/country_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
