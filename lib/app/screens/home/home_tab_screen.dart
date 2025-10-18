@@ -1,3 +1,6 @@
+// TODO: criar um widget statefull para o banner e adicionar um timeout para recriar o banner de tempos em tempos
+// TODO: mover o banner para que fique fixo na tela, igual a tela de histórico
+
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:daycalc/app/config/constants.dart';
 import 'package:daycalc/app/enums/operation_type.dart';

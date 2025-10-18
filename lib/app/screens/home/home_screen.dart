@@ -1,5 +1,6 @@
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/screens/home/history_tab_screen.dart';
+import 'package:daycalc/app/screens/home/holidays_tab_screen.dart';
 import 'package:daycalc/app/screens/home/home_tab_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               });
             },
           ),
+          HolidaysTabScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -61,6 +63,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           BottomNavigationBarItem(
             icon: const Icon(Icons.history),
             label: localizations.history,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.holiday_village),
+            label: localizations.holidays,
           ),
         ],
       ),

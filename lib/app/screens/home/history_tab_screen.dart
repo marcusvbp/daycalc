@@ -1,3 +1,5 @@
+// TODO: criar um widget statefull para o banner e adicionar um timeout para recriar o banner de tempos em tempos
+
 import 'package:daycalc/app/config/constants.dart';
 import 'package:daycalc/app/enums/operation_type.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';

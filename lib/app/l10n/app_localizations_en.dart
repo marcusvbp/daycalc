@@ -205,4 +205,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get countryInfo =>
       'We will use this information to get the list of national and school holidays.';
+
+  @override
+  String get holidays => 'Holidays';
 }

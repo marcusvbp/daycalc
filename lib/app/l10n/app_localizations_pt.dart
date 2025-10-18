@@ -205,4 +205,7 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get countryInfo =>
       'Utilizaremos esta informação para obter a lista de feriados nacionais e escolares.';
+
+  @override
+  String get holidays => 'Feriados';
 }

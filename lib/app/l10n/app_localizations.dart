@@ -365,6 +365,8 @@ abstract class AppLocalizations {
   String get selectCountry;
 
   String get countryInfo;
+
+  String get holidays;
 }
 
 class _AppLocalizationsDelegate
