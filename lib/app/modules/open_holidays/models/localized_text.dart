@@ -11,8 +11,5 @@ class LocalizedText {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'language': language,
-        'text': text,
-      };
+  Map<String, dynamic> toJson() => {'language': language, 'text': text};
 }
