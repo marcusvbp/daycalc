@@ -65,7 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             label: localizations.history,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.holiday_village),
+            icon: const Icon(Icons.beach_access),
             label: localizations.holidays,
           ),
         ],
