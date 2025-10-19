@@ -38,7 +38,7 @@ final class CountriesCollectionNotifierProvider
 }
 
 String _$countriesCollectionNotifierHash() =>
-    r'8e9af7279e9e3ee2bbacaf716f53696ea27ce8fa';
+    r'44d23cc8bc9a30892e3472234c62861e3471e296';
 
 abstract class _$CountriesCollectionNotifier
     extends $AsyncNotifier<CountriesCollection> {
