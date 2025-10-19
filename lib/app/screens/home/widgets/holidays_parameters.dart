@@ -2,6 +2,8 @@ import 'package:daycalc/app/extensions/country_extension.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/providers/countries_collection_provider.dart';
 import 'package:daycalc/app/providers/country_preference_provider.dart';
+import 'package:daycalc/app/providers/holidays_params_provider.dart';
+import 'package:daycalc/app/utils/format_localized_date.dart';
 import 'package:daycalc/app/widgets/country_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +14,7 @@ class HolidaysParameters extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final countryAsync = ref.watch(countryPreferenceProvider);
+    final holidaysParams = ref.watch(holidaysParamsProvider);
 
     return Card(
       child: Padding(
@@ -26,16 +29,28 @@ class HolidaysParameters extends ConsumerWidget {
             ),
             Row(
               children: [
-                Expanded(child: Text('Data inicial')),
+                Expanded(
+                  child: Text(
+                    getLocalizedDate(
+                      holidaysParams.validFrom,
+                      AppLocalizations.of(context)!.localeName,
+                      'Data inicial',
+                    ),
+                  ),
+                ),
                 IconButton(
                   onPressed: () async {
-                    await showDatePicker(
+                    final date = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(1900),
                       lastDate: DateTime(2100),
                     );
-                    // Você pode utilizar selectedDate conforme necessário
+                    if (date != null) {
+                      ref
+                          .read(holidaysParamsProvider.notifier)
+                          .setValidFrom(date);
+                    }
                   },
                   icon: Icon(Icons.calendar_month),
                 ),
@@ -43,16 +58,28 @@ class HolidaysParameters extends ConsumerWidget {
             ),
             Row(
               children: [
-                Expanded(child: Text('Data final')),
+                Expanded(
+                  child: Text(
+                    getLocalizedDate(
+                      holidaysParams.validTo,
+                      AppLocalizations.of(context)!.localeName,
+                      'Data final',
+                    ),
+                  ),
+                ),
                 IconButton(
                   onPressed: () async {
-                    await showDatePicker(
+                    final date = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(1900),
                       lastDate: DateTime(2100),
                     );
-                    // Você pode utilizar selectedDate conforme necessário
+                    if (date != null) {
+                      ref
+                          .read(holidaysParamsProvider.notifier)
+                          .setValidTo(date);
+                    }
                   },
                   icon: Icon(Icons.calendar_month),
                 ),

@@ -11,6 +11,7 @@ import 'package:daycalc/app/models/date_range_calculator.dart';
 import 'package:daycalc/app/providers/date_operations_history_provider.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
+import 'package:daycalc/app/utils/format_localized_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -284,7 +285,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          '${localizations.selectedDate}: ${ref.read(userDateProvider.notifier).getFormattedDate(AppLocalizations.of(context)!.localeName)}',
+                          '${localizations.selectedDate}: ${getLocalizedDate(userDate, AppLocalizations.of(context)!.localeName)}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
