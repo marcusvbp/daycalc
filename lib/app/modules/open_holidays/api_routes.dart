@@ -8,5 +8,6 @@ class OpenHolidaysApiRoutes extends ApiRoutesFoundation {
     'school-holidays': '/SchoolHolidays',
     'school-holidays-by-date': '/SchoolHolidaysByDate',
     'countries': '/Countries',
+    'languages': '/Languages',
   };
 }
