@@ -360,6 +360,15 @@ abstract class AppLocalizations {
 
   String get continueLabel;
 
+  String get cancel;
+  String get dateRange;
+  String get initialDate;
+  String get countryNotSelected;
+  String get changeCountry;
+  String get loadingCountry;
+  String errorLoadingCountries(String error);
+  String errorLoadingCountry(String error);
+
   String get country;
 
   String get selectCountry;

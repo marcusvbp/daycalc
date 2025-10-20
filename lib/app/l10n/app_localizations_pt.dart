@@ -208,4 +208,32 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get holidays => 'Feriados';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get dateRange => 'Intervalo de datas';
+
+  @override
+  String get initialDate => 'Data inicial';
+
+  @override
+  String get countryNotSelected => 'País não selecionado';
+
+  @override
+  String get changeCountry => 'Alterar país';
+
+  @override
+  String get loadingCountry => 'Carregando país...';
+
+  @override
+  String errorLoadingCountries(String error) {
+    return 'Erro ao carregar países: $error';
+  }
+
+  @override
+  String errorLoadingCountry(String error) {
+    return 'Erro ao carregar país: $error';
+  }
 }

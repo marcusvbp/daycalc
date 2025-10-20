@@ -15,6 +15,7 @@ class HolidaysParameters extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final countryAsync = ref.watch(countryPreferenceProvider);
     final holidaysParams = ref.watch(holidaysParamsProvider);
+    final localizations = AppLocalizations.of(context)!;
 
     return Card(
       child: Padding(
@@ -24,7 +25,7 @@ class HolidaysParameters extends ConsumerWidget {
           spacing: 3,
           children: [
             Text(
-              'Intervalo de datas',
+              localizations.dateRange,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             Row(
@@ -33,8 +34,8 @@ class HolidaysParameters extends ConsumerWidget {
                   child: Text(
                     getLocalizedDate(
                       holidaysParams.validFrom,
-                      AppLocalizations.of(context)!.localeName,
-                      'Data inicial',
+                      localizations.localeName,
+                      localizations.initialDate,
                     ),
                   ),
                 ),
@@ -62,8 +63,8 @@ class HolidaysParameters extends ConsumerWidget {
                   child: Text(
                     getLocalizedDate(
                       holidaysParams.validTo,
-                      AppLocalizations.of(context)!.localeName,
-                      'Data final',
+                      localizations.localeName,
+                      localizations.finalDate,
                     ),
                   ),
                 ),
@@ -90,7 +91,7 @@ class HolidaysParameters extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      country?.displayName(context) ?? 'País não selecionado',
+                      country?.displayName(context) ?? localizations.countryNotSelected,
                     ),
                   ),
                   TextButton(
@@ -130,8 +131,11 @@ class HolidaysParameters extends ConsumerWidget {
                                       child: CircularProgressIndicator(),
                                     ),
                                   ),
-                                  error: (error, _) =>
-                                      Text('Erro ao carregar países: $error'),
+                                  error: (error, _) => Text(
+                                    localizations.errorLoadingCountries(
+                                      error.toString(),
+                                    ),
+                                  ),
                                 );
                               },
                             ),
@@ -146,13 +150,17 @@ class HolidaysParameters extends ConsumerWidget {
                       );
                     },
                     child: Text(
-                      country != null ? 'Alterar país' : 'Selecionar país',
+                      country != null
+                          ? localizations.changeCountry
+                          : localizations.selectCountry,
                     ),
                   ),
                 ],
               ),
-              error: (error, _) => Text('Erro ao carregar país: $error'),
-              loading: () => Text('Carregando país...'),
+              error: (error, _) => Text(
+                localizations.errorLoadingCountry(error.toString()),
+              ),
+              loading: () => Text(localizations.loadingCountry),
             ),
           ],
         ),

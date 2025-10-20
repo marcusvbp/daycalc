@@ -261,27 +261,28 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
   }
 
   void _showClearHistoryDialog(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Limpar Histórico'),
-        content: const Text(
-          'Tem certeza que deseja limpar todo o histórico de operações? Esta ação não pode ser desfeita.',
+        title: Text(localizations.clearHistory),
+        content: Text(
+          localizations.clearHistoryConfirmation,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(localizations.cancel),
           ),
           TextButton(
             onPressed: () {
               ref.read(dateOperationsHistoryProvider.notifier).clearHistory();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Histórico limpo com sucesso')),
+                SnackBar(content: Text(localizations.clearHistorySuccess)),
               );
             },
-            child: const Text('Limpar'),
+            child: Text(localizations.clearHistory),
           ),
         ],
       ),
@@ -301,7 +302,7 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(localizations.cancel),
           ),
           TextButton(
             onPressed: () {

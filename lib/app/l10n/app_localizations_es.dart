@@ -204,8 +204,36 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get countryInfo =>
-      'Utilizaremos esta información para obtener la lista de feriados nacionais y escolares.';
+      'Utilizaremos esta información para obtener la lista de feriados nacionales y escolares.';
 
   @override
   String get holidays => 'Feriados';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get dateRange => 'Intervalo de fechas';
+
+  @override
+  String get initialDate => 'Fecha inicial';
+
+  @override
+  String get countryNotSelected => 'País no seleccionado';
+
+  @override
+  String get changeCountry => 'Cambiar país';
+
+  @override
+  String get loadingCountry => 'Cargando país...';
+
+  @override
+  String errorLoadingCountries(String error) {
+    return 'Error al cargar países: $error';
+  }
+
+  @override
+  String errorLoadingCountry(String error) {
+    return 'Error al cargar país: $error';
+  }
 }

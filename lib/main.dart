@@ -71,8 +71,23 @@ class _MyAppState extends ConsumerState<MyApp> {
             home: Scaffold(body: Center(child: CircularProgressIndicator())),
           ),
           error: (error, stackTrace) => MaterialApp(
-            home: Scaffold(
-              body: Center(child: Text('Erro ao carregar idioma: $error')),
+            debugShowCheckedModeBanner: false,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: Builder(
+              builder: (context) {
+                final localizations = AppLocalizations.of(context)!;
+                return Scaffold(
+                  body: Center(
+                    child: Text(localizations.errorMessage(error.toString())),
+                  ),
+                );
+              },
             ),
           ),
         );
@@ -81,8 +96,23 @@ class _MyAppState extends ConsumerState<MyApp> {
         home: Scaffold(body: Center(child: CircularProgressIndicator())),
       ),
       error: (error, stackTrace) => MaterialApp(
-        home: Scaffold(
-          body: Center(child: Text('Erro ao carregar tema: $error')),
+        debugShowCheckedModeBanner: false,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: Builder(
+          builder: (context) {
+            final localizations = AppLocalizations.of(context)!;
+            return Scaffold(
+              body: Center(
+                child: Text(localizations.errorMessage(error.toString())),
+              ),
+            );
+          },
         ),
       ),
     );

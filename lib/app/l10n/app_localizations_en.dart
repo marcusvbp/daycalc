@@ -208,4 +208,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get holidays => 'Holidays';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get dateRange => 'Date range';
+
+  @override
+  String get initialDate => 'Initial date';
+
+  @override
+  String get countryNotSelected => 'Country not selected';
+
+  @override
+  String get changeCountry => 'Change country';
+
+  @override
+  String get loadingCountry => 'Loading country...';
+
+  @override
+  String errorLoadingCountries(String error) {
+    return 'Error loading countries: $error';
+  }
+
+  @override
+  String errorLoadingCountry(String error) {
+    return 'Error loading country: $error';
+  }
 }
