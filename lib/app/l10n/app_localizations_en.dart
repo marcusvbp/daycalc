@@ -236,4 +236,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String errorLoadingCountry(String error) {
     return 'Error loading country: $error';
   }
+
+  @override
+  String get holidaysApiError => 'Error loading holidays';
 }

@@ -236,4 +236,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String errorLoadingCountry(String error) {
     return 'Error al cargar país: $error';
   }
+
+  @override
+  String get holidaysApiError =>
+      'Error al intentar obtener los datos de Feriados';
 }
