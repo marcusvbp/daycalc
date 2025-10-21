@@ -22,3 +22,6 @@ final admobHistoricoId = Platform.isAndroid
     : admobHistoricoIos;
 
 const openHolidaysApiUrl = String.fromEnvironment('OPEN_HOLIDAYS_API_URL');
+const openHolidaysMaxInterval = int.fromEnvironment(
+  'OPEN_HOLIDAYS_MAX_INTERVAL',
+);
