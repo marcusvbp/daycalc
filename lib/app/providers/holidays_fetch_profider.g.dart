@@ -35,7 +35,7 @@ final class HolidaysFetchNotifierProvider
 }
 
 String _$holidaysFetchNotifierHash() =>
-    r'bea156ad4b4e9543e0755e91c68a97b5242f1881';
+    r'84e1ed3cb1b427b81e60f825e5354955978ca351';
 
 abstract class _$HolidaysFetchNotifier
     extends $AsyncNotifier<List<PublicHoliday>?> {

@@ -3,6 +3,7 @@ import 'package:daycalc/app/modules/open_holidays/services/public_holidays.dart'
 import 'package:daycalc/app/providers/country_preference_provider.dart';
 import 'package:daycalc/app/providers/holidays_params_provider.dart';
 import 'package:daycalc/app/providers/locale_provider.dart';
+import 'package:daycalc/app/utils/format_date_to_api_params.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'holidays_fetch_profider.g.dart';
@@ -28,16 +29,12 @@ class HolidaysFetchNotifier extends _$HolidaysFetchNotifier {
     final service = PublicHolidaysService(ref: ref);
 
     final query = {
-      'validFrom': _formatDate(validFrom),
-      'validTo': _formatDate(validTo),
+      'validFrom': formatDateToApiParam(validFrom),
+      'validTo': formatDateToApiParam(validTo),
       'countryIsoCode': countryIsoCode,
       'languageIsoCode': languageIsoCode.toUpperCase(),
     };
 
     return await service.listPublicHolidays(query);
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 }
