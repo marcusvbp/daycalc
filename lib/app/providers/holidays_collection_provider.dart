@@ -12,19 +12,20 @@ part 'holidays_collection_provider.g.dart';
 
 @riverpod
 class HolidaysCollectionNotifier extends _$HolidaysCollectionNotifier {
-  late final HolidaysCollectionStorageService _storage;
+  late final HolidaysCollectionStorageService _storage =
+      HolidaysCollectionStorageService();
 
   @override
   Future<HolidaysCollection?> build() async {
-    _storage = HolidaysCollectionStorageService();
-
     final currentLocale = await ref.watch(localeProvider.future);
     final country = await ref.watch(countryPreferenceProvider.future);
     final stored = await _storage.load();
 
     bool needRefresh = false;
 
-    if (stored == null || country == null || stored.country != country) {
+    if (stored == null ||
+        country == null ||
+        stored.country.isoCode != country.isoCode) {
       needRefresh = true;
     } else {
       final nowYear = DateTime.now().year;
@@ -69,7 +70,7 @@ class HolidaysCollectionNotifier extends _$HolidaysCollectionNotifier {
     final updated = HolidaysCollection(
       publicHolidays: public,
       schoolHolidays: school,
-      createdAt: DateTime.now().year,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
       locale: currentLocale,
       country: country!,
     );
