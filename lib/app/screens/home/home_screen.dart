@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:daycalc/app/l10n/app_localizations.dart';
+import 'package:daycalc/app/providers/holidays_collection_provider.dart';
 import 'package:daycalc/app/screens/home/history_tab_screen.dart';
 import 'package:daycalc/app/screens/home/holidays_tab_screen.dart';
 import 'package:daycalc/app/screens/home/home_tab_screen.dart';
@@ -19,6 +22,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+
+    ref.listen(holidaysCollectionProvider, (previous, next) {
+      if (next is AsyncData) {
+        log('obteve dados de feriados');
+      }
+      if (next is AsyncError) {
+        log('erro ao obter dados de feriados');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            showCloseIcon: true,
+            closeIconColor: Colors.white,
+            duration: const Duration(seconds: 12),
+            backgroundColor: Colors.red,
+            content: Text(
+              localizations.holidaysApiError,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
