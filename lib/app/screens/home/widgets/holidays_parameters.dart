@@ -58,139 +58,157 @@ class HolidaysParameters extends ConsumerWidget {
     }
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 3,
-          children: [
-            Text(
-              localizations.dateRange,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            if (holidaysParams.validFrom != null)
-              Text(
-                localizations.validFrom(DateTime.now().year),
-                style: TextStyle(color: Theme.of(context).hintColor),
-              ),
-            Row(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    getLocalizedDate(
-                      holidaysParams.validFrom,
-                      localizations.localeName,
-                      localizations.initialDate,
-                    ),
+                Text(
+                  localizations.dateRange,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                if (holidaysParams.validFrom != null)
+                  Text(
+                    localizations.validFrom(DateTime.now().year),
+                    style: TextStyle(color: Theme.of(context).hintColor),
                   ),
-                ),
-                IconButton(
-                  onPressed: validFromSelect,
-                  icon: Icon(Icons.calendar_month),
-                ),
               ],
             ),
-            Text(
-              localizations.dateIntervalInfo,
-              style: TextStyle(color: Theme.of(context).hintColor),
-            ),
-            Row(
+          ),
+          Divider(color: Theme.of(context).dividerColor, height: 1),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    getLocalizedDate(
-                      holidaysParams.validTo,
-                      localizations.localeName,
-                      localizations.finalDate,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        getLocalizedDate(
+                          holidaysParams.validFrom,
+                          localizations.localeName,
+                          localizations.initialDate,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: holidaysParams.validFrom != null
-                      ? validToSelect
-                      : null,
-                  icon: Icon(Icons.calendar_month),
-                ),
-              ],
-            ),
-            countryAsync.when(
-              data: (country) => Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      country?.displayName(context) ??
-                          localizations.countryNotSelected,
+                    IconButton(
+                      onPressed: validFromSelect,
+                      icon: Icon(Icons.calendar_month),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          final localizations = AppLocalizations.of(context)!;
-                          return AlertDialog(
-                            title: Text(localizations.selectCountry),
-                            content: Consumer(
-                              builder: (context, ref, _) {
-                                final countriesAsync = ref.watch(
-                                  countriesCollectionProvider,
-                                );
-                                final selectedCountryAsync = ref.watch(
-                                  countryPreferenceProvider,
-                                );
-                                return countriesAsync.when(
-                                  data: (data) => CountrySelect(
-                                    countries: data.countries,
-                                    defaultValue: selectedCountryAsync.value,
-                                    onChange: (v) {
-                                      if (v != null) {
-                                        ref
-                                            .read(
-                                              countryPreferenceProvider
-                                                  .notifier,
-                                            )
-                                            .setCountry(v);
-                                      }
-                                    },
+                  ],
+                ),
+                Text(
+                  localizations.dateIntervalInfo,
+                  style: TextStyle(color: Theme.of(context).hintColor),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        getLocalizedDate(
+                          holidaysParams.validTo,
+                          localizations.localeName,
+                          localizations.finalDate,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: holidaysParams.validFrom != null
+                          ? validToSelect
+                          : null,
+                      icon: Icon(Icons.calendar_month),
+                    ),
+                  ],
+                ),
+                countryAsync.when(
+                  data: (country) => Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          country?.displayName(context) ??
+                              localizations.countryNotSelected,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              final localizations = AppLocalizations.of(
+                                context,
+                              )!;
+                              return AlertDialog(
+                                title: Text(localizations.selectCountry),
+                                content: Consumer(
+                                  builder: (context, ref, _) {
+                                    final countriesAsync = ref.watch(
+                                      countriesCollectionProvider,
+                                    );
+                                    final selectedCountryAsync = ref.watch(
+                                      countryPreferenceProvider,
+                                    );
+                                    return countriesAsync.when(
+                                      data: (data) => CountrySelect(
+                                        countries: data.countries,
+                                        defaultValue:
+                                            selectedCountryAsync.value,
+                                        onChange: (v) {
+                                          if (v != null) {
+                                            ref
+                                                .read(
+                                                  countryPreferenceProvider
+                                                      .notifier,
+                                                )
+                                                .setCountry(v);
+                                          }
+                                        },
+                                      ),
+                                      loading: () => const SizedBox(
+                                        height: 80,
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                      error: (error, _) => Text(
+                                        localizations.errorLoadingCountries(
+                                          error.toString(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: Text(localizations.close),
                                   ),
-                                  loading: () => const SizedBox(
-                                    height: 80,
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                  error: (error, _) => Text(
-                                    localizations.errorLoadingCountries(
-                                      error.toString(),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(localizations.close),
-                              ),
-                            ],
+                                ],
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                    child: Text(
-                      country != null
-                          ? localizations.changeCountry
-                          : localizations.selectCountry,
-                    ),
+                        child: Text(
+                          country != null
+                              ? localizations.changeCountry
+                              : localizations.selectCountry,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              error: (error, _) =>
-                  Text(localizations.errorLoadingCountry(error.toString())),
-              loading: () => Text(localizations.loadingCountry),
+                  error: (error, _) =>
+                      Text(localizations.errorLoadingCountry(error.toString())),
+                  loading: () => Text(localizations.loadingCountry),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
