@@ -3,6 +3,7 @@ import 'package:daycalc/app/extensions/country_extension.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/providers/countries_collection_provider.dart';
 import 'package:daycalc/app/providers/country_preference_provider.dart';
+import 'package:daycalc/app/providers/holidays_collection_provider.dart';
 import 'package:daycalc/app/providers/holidays_params_provider.dart';
 import 'package:daycalc/app/utils/format_localized_date.dart';
 import 'package:daycalc/app/widgets/country_select.dart';
@@ -52,6 +53,7 @@ class HolidaysParameters extends ConsumerWidget {
       );
       if (date != null) {
         ref.read(holidaysParamsProvider.notifier).setValidTo(date);
+        await ref.read(holidaysCollectionProvider.notifier).refresh();
       }
     }
 

@@ -58,9 +58,6 @@ class HolidaysList extends StatelessWidget {
       return items;
     }
 
-    final fromDay = DateTime(from.year, from.month, from.day);
-    final toDay = DateTime(to.year, to.month, to.day);
-
     return items.where((h) {
       DateTime? start = DateTime.tryParse(h.startDate);
       DateTime? end = DateTime.tryParse(h.endDate);
@@ -76,7 +73,7 @@ class HolidaysList extends StatelessWidget {
       final endDay = DateTime(end.year, end.month, end.day);
 
       // Overlap condition: [startDay, endDay] intersects [fromDay, toDay]
-      final overlaps = !(endDay.isBefore(fromDay) || startDay.isAfter(toDay));
+      final overlaps = !(endDay.isBefore(from) || startDay.isAfter(to));
       return overlaps;
     }).toList();
   }
