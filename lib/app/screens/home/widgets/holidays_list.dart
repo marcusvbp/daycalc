@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:daycalc/app/modules/open_holidays/models/public_holiday.dart';
+import 'package:flutter/material.dart';
+
 import 'holiday_card.dart';
 
 class HolidaysList extends StatelessWidget {
@@ -8,6 +9,8 @@ class HolidaysList extends StatelessWidget {
   final ValueChanged<PublicHoliday>? onItemTap;
   final ScrollPhysics? physics;
   final bool shrinkWrap;
+  final DateTime? validFrom;
+  final DateTime? validTo;
 
   const HolidaysList({
     super.key,
@@ -16,6 +19,8 @@ class HolidaysList extends StatelessWidget {
     this.onItemTap,
     this.physics,
     this.shrinkWrap = false,
+    this.validFrom,
+    this.validTo,
   });
 
   @override
@@ -24,13 +29,15 @@ class HolidaysList extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final filtered = _applyDateFilter(holidays, validFrom, validTo);
+
     return ListView.builder(
-      itemCount: holidays.length,
+      itemCount: filtered.length,
       padding: padding,
       physics: physics,
       shrinkWrap: shrinkWrap,
       itemBuilder: (context, index) {
-        final holiday = holidays[index];
+        final holiday = filtered[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: HolidayCard(
@@ -40,5 +47,37 @@ class HolidaysList extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<PublicHoliday> _applyDateFilter(
+    List<PublicHoliday> items,
+    DateTime? from,
+    DateTime? to,
+  ) {
+    if (from == null || to == null) {
+      return items;
+    }
+
+    final fromDay = DateTime(from.year, from.month, from.day);
+    final toDay = DateTime(to.year, to.month, to.day);
+
+    return items.where((h) {
+      DateTime? start = DateTime.tryParse(h.startDate);
+      DateTime? end = DateTime.tryParse(h.endDate);
+
+      if (start == null && end == null) {
+        return false;
+      }
+
+      start ??= end!;
+      end ??= start;
+
+      final startDay = DateTime(start.year, start.month, start.day);
+      final endDay = DateTime(end.year, end.month, end.day);
+
+      // Overlap condition: [startDay, endDay] intersects [fromDay, toDay]
+      final overlaps = !(endDay.isBefore(fromDay) || startDay.isAfter(toDay));
+      return overlaps;
+    }).toList();
   }
 }
