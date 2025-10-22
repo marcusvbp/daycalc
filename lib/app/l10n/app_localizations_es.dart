@@ -240,4 +240,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get holidaysApiError =>
       'Error al intentar obtener los datos de Feriados';
+
+  @override
+  String validFrom(int year) => 'Adicione datas entre 2020 e ${year}.';
+
+  @override
+  String get dateIntervalInfo =>
+      'El intervalo entre las fechas no puede ser superior a 3 años.';
 }

@@ -378,6 +378,10 @@ abstract class AppLocalizations {
   String get holidays;
 
   String get holidaysApiError;
+
+  String validFrom(int year);
+
+  String get dateIntervalInfo;
 }
 
 class _AppLocalizationsDelegate

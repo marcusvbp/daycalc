@@ -239,4 +239,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get holidaysApiError => 'Error loading holidays';
+
+  @override
+  String validFrom(int year) => 'Add dates between 2020 and ${year}.';
+
+  @override
+  String get dateIntervalInfo =>
+      'The interval between the dates cannot be greater than 3 years.';
 }
