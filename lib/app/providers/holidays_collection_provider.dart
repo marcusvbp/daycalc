@@ -83,7 +83,7 @@ class HolidaysCollectionNotifier extends _$HolidaysCollectionNotifier {
 
   @override
   Future<HolidaysCollection?> build() async {
-    return await _fetch();
+    return null;
   }
 
   Future<void> refresh() async {
