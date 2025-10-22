@@ -66,6 +66,11 @@ class HolidaysParameters extends ConsumerWidget {
               localizations.dateRange,
               style: Theme.of(context).textTheme.titleMedium,
             ),
+            if (holidaysParams.validFrom != null)
+              Text(
+                localizations.validFrom(DateTime.now().year),
+                style: TextStyle(color: Theme.of(context).hintColor),
+              ),
             Row(
               children: [
                 Expanded(
@@ -82,6 +87,10 @@ class HolidaysParameters extends ConsumerWidget {
                   icon: Icon(Icons.calendar_month),
                 ),
               ],
+            ),
+            Text(
+              localizations.dateIntervalInfo,
+              style: TextStyle(color: Theme.of(context).hintColor),
             ),
             Row(
               children: [
