@@ -38,4 +38,19 @@ class HolidaysCollection {
     'locale': locale.toString(),
     'country': country.toJson(),
   };
+
+  List<PublicHoliday> get allHolidaysSorted {
+    final merged = <PublicHoliday>[...publicHolidays, ...schoolHolidays];
+    merged.sort((a, b) {
+      final DateTime? aDate =
+          DateTime.tryParse(a.startDate) ?? DateTime.tryParse(a.endDate);
+      final DateTime? bDate =
+          DateTime.tryParse(b.startDate) ?? DateTime.tryParse(b.endDate);
+      if (aDate == null && bDate == null) return 0;
+      if (aDate == null) return 1;
+      if (bDate == null) return -1;
+      return bDate.compareTo(aDate);
+    });
+    return merged;
+  }
 }
