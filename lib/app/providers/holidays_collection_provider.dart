@@ -3,6 +3,7 @@ import 'package:daycalc/app/models/holidays_collection.dart';
 import 'package:daycalc/app/modules/open_holidays/services/public_holidays.dart';
 import 'package:daycalc/app/modules/open_holidays/services/school_holidays.dart';
 import 'package:daycalc/app/providers/country_preference_provider.dart';
+import 'package:daycalc/app/providers/holidays_params_provider.dart';
 import 'package:daycalc/app/providers/locale_provider.dart';
 import 'package:daycalc/app/services/holidays_collection_storage_service.dart';
 import 'package:daycalc/app/utils/format_date_to_api_params.dart';
@@ -15,13 +16,13 @@ class HolidaysCollectionNotifier extends _$HolidaysCollectionNotifier {
   late final HolidaysCollectionStorageService _storage =
       HolidaysCollectionStorageService();
 
-  @override
-  Future<HolidaysCollection?> build() async {
-    final currentLocale = await ref.watch(localeProvider.future);
-    final country = await ref.watch(countryPreferenceProvider.future);
+  Future<HolidaysCollection?> _fetch({bool forceRefresh = false}) async {
+    final currentLocale = await ref.read(localeProvider.future);
+    final country = await ref.read(countryPreferenceProvider.future);
+    final holidaysParams = ref.read(holidaysParamsProvider);
     final stored = await _storage.load();
 
-    bool needRefresh = false;
+    bool needRefresh = forceRefresh;
 
     if (stored == null ||
         country == null ||
@@ -49,8 +50,8 @@ class HolidaysCollectionNotifier extends _$HolidaysCollectionNotifier {
       Duration(days: openHolidaysMaxInterval),
     );
 
-    final validFrom = initialDate;
-    final validTo = finalDate;
+    final validFrom = holidaysParams.validFrom ?? initialDate;
+    final validTo = holidaysParams.validTo ?? finalDate;
     final countryIsoCode = country?.isoCode;
 
     final languageIsoCode = currentLocale.languageCode.toUpperCase();
@@ -78,5 +79,15 @@ class HolidaysCollectionNotifier extends _$HolidaysCollectionNotifier {
     await _storage.save(updated);
 
     return updated;
+  }
+
+  @override
+  Future<HolidaysCollection?> build() async {
+    return await _fetch();
+  }
+
+  Future<void> refresh() async {
+    state = AsyncLoading();
+    state = AsyncData(await _fetch(forceRefresh: true));
   }
 }
