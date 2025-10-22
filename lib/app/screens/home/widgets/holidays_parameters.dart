@@ -1,3 +1,4 @@
+import 'package:daycalc/app/config/constants.dart';
 import 'package:daycalc/app/extensions/country_extension.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/providers/countries_collection_provider.dart';
@@ -16,6 +17,43 @@ class HolidaysParameters extends ConsumerWidget {
     final countryAsync = ref.watch(countryPreferenceProvider);
     final holidaysParams = ref.watch(holidaysParamsProvider);
     final localizations = AppLocalizations.of(context)!;
+
+    Future<void> validFromSelect() async {
+      final date = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2020, 01, 01),
+        lastDate: DateTime(DateTime.now().year, 12, 31),
+      );
+      if (date != null) {
+        ref.read(holidaysParamsProvider.notifier).setValidFrom(date);
+        ref.read(holidaysParamsProvider.notifier).setValidTo(null);
+      }
+    }
+
+    Future<void> validToSelect() async {
+      DateTime firstDate = DateTime(2020, 01, 01);
+      DateTime lastDate = DateTime(DateTime.now().year, 12, 31);
+      DateTime initialDate = DateTime.now();
+      if (holidaysParams.validFrom != null) {
+        firstDate = holidaysParams.validFrom!;
+        final diff = lastDate.difference(firstDate).inDays;
+        if (diff > openHolidaysMaxInterval) {
+          lastDate = firstDate.add(Duration(days: openHolidaysMaxInterval));
+          initialDate = lastDate;
+        }
+      }
+
+      final date = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: firstDate,
+        lastDate: lastDate,
+      );
+      if (date != null) {
+        ref.read(holidaysParamsProvider.notifier).setValidTo(date);
+      }
+    }
 
     return Card(
       child: Padding(
@@ -40,19 +78,7 @@ class HolidaysParameters extends ConsumerWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2100),
-                    );
-                    if (date != null) {
-                      ref
-                          .read(holidaysParamsProvider.notifier)
-                          .setValidFrom(date);
-                    }
-                  },
+                  onPressed: validFromSelect,
                   icon: Icon(Icons.calendar_month),
                 ),
               ],
@@ -69,19 +95,9 @@ class HolidaysParameters extends ConsumerWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2100),
-                    );
-                    if (date != null) {
-                      ref
-                          .read(holidaysParamsProvider.notifier)
-                          .setValidTo(date);
-                    }
-                  },
+                  onPressed: holidaysParams.validFrom != null
+                      ? validToSelect
+                      : null,
                   icon: Icon(Icons.calendar_month),
                 ),
               ],
@@ -91,7 +107,8 @@ class HolidaysParameters extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      country?.displayName(context) ?? localizations.countryNotSelected,
+                      country?.displayName(context) ??
+                          localizations.countryNotSelected,
                     ),
                   ),
                   TextButton(
@@ -157,9 +174,8 @@ class HolidaysParameters extends ConsumerWidget {
                   ),
                 ],
               ),
-              error: (error, _) => Text(
-                localizations.errorLoadingCountry(error.toString()),
-              ),
+              error: (error, _) =>
+                  Text(localizations.errorLoadingCountry(error.toString())),
               loading: () => Text(localizations.loadingCountry),
             ),
           ],
