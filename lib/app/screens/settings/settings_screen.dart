@@ -15,7 +15,7 @@ class SettingsScreen extends ConsumerWidget {
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) {
           // Reexecuta o provider sempre que a tela for fechada
-          ref.invalidate(holidaysCollectionProvider);
+          ref.read(holidaysCollectionProvider.notifier).refresh();
         }
       },
       child: Scaffold(
