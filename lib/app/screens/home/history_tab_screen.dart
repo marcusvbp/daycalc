@@ -6,6 +6,7 @@ import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/models/date_operation_record.dart';
 import 'package:daycalc/app/providers/date_operations_history_provider.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
+import 'package:daycalc/app/providers/home_tabs_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,9 +14,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 
 class HistoryTabScreen extends ConsumerStatefulWidget {
-  final VoidCallback? onNavigateToHomeTab;
-
-  const HistoryTabScreen({super.key, this.onNavigateToHomeTab});
+  const HistoryTabScreen({super.key});
 
   @override
   ConsumerState<HistoryTabScreen> createState() => _HistoryTabScreenState();
@@ -219,7 +218,7 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
           dateOpsNotifier.setIsHistoryRestored(true);
 
           // 3. Navegar para a tab home
-          widget.onNavigateToHomeTab?.call();
+          ref.read(homeTabsProvider.notifier).set(0);
         },
         leading: CircleAvatar(
           backgroundColor: isAddOperation ? Colors.green : Colors.red,
@@ -266,9 +265,7 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.clearHistory),
-        content: Text(
-          localizations.clearHistoryConfirmation,
-        ),
+        content: Text(localizations.clearHistoryConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),

@@ -38,7 +38,7 @@ final class HolidaysCollectionNotifierProvider
 }
 
 String _$holidaysCollectionNotifierHash() =>
-    r'c019e495e8c201277eecce1f472d79dae1d98c5d';
+    r'c66b67000d6bb6b0a7bb6069ca09eec61ab4153e';
 
 abstract class _$HolidaysCollectionNotifier
     extends $AsyncNotifier<HolidaysCollection?> {

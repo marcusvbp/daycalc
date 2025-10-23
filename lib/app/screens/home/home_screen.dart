@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/providers/holidays_collection_provider.dart';
+import 'package:daycalc/app/providers/home_tabs_provider.dart';
 import 'package:daycalc/app/screens/home/history_tab_screen.dart';
 import 'package:daycalc/app/screens/home/holidays_tab_screen.dart';
 import 'package:daycalc/app/screens/home/home_tab_screen.dart';
@@ -17,11 +18,10 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final homeTabs = ref.watch(homeTabsProvider);
 
     ref.listen(holidaysCollectionProvider, (previous, next) {
       if (next is AsyncData) {
@@ -58,26 +58,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
       body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          HomeTabScreen(),
-          HistoryTabScreen(
-            onNavigateToHomeTab: () {
-              setState(() {
-                _currentIndex = 0;
-              });
-            },
-          ),
-          HolidaysTabScreen(),
-        ],
+        index: homeTabs,
+        children: [HomeTabScreen(), HistoryTabScreen(), HolidaysTabScreen()],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        currentIndex: homeTabs,
+        onTap: ref.read(homeTabsProvider.notifier).set,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
