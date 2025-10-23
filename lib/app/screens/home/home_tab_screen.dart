@@ -11,6 +11,7 @@ import 'package:daycalc/app/models/date_range_calculator.dart';
 import 'package:daycalc/app/providers/date_operations_history_provider.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
+import 'package:daycalc/app/screens/home/widgets/check_holidays_button.dart';
 import 'package:daycalc/app/utils/format_localized_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -464,111 +465,124 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
               Card(
                 child: Container(
                   padding: const EdgeInsets.all(16),
-                  child: Row(
-                    spacing: 12,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                     children: [
-                      Icon(
-                        Icons.access_time,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _makeLabel(
-                              localizations.finalDate,
-                              _dateCalculator!.formattedDate,
-                            ),
-                            if (dateOperations.operationType ==
-                                OperationType.add)
-                              _makeLabel(
-                                localizations.workingDays,
-                                '${DateRangeCalculator.calculateDaysOptimized(_dateCalculator!.date, _dateCalculator!.calculatedDate)['diasUteis'].toString()} *',
-                              ),
-                            if (dateOperations.operationType ==
-                                OperationType.subtract)
-                              _makeLabel(
-                                localizations.workingDays,
-                                '${DateRangeCalculator.calculateDaysOptimized(_dateCalculator!.calculatedDate, _dateCalculator!.date)['diasUteis'].toString()} *',
-                              ),
-                            _makeLabel(
-                              null,
-                              '* ${localizations.notConsiderHolidays}',
-                            ),
-                            if (dateOperations.operationType ==
-                                OperationType.add)
-                              _makeLabel(
-                                localizations.weekends,
-                                DateRangeCalculator.calculateDaysOptimized(
-                                  _dateCalculator!.date,
-                                  _dateCalculator!.calculatedDate,
-                                )['finsDeSemana'].toString(),
-                              ),
-                            if (dateOperations.operationType ==
-                                OperationType.subtract)
-                              _makeLabel(
-                                localizations.weekends,
-                                DateRangeCalculator.calculateDaysOptimized(
-                                  _dateCalculator!.calculatedDate,
-                                  _dateCalculator!.date,
-                                )['finsDeSemana'].toString(),
-                              ),
-                            _makeLabel(
-                              dateOperations.operationType.symbol,
-                              ref
-                                  .read(dateOperationsProvider.notifier)
-                                  .formatDurationToString(
-                                    AppLocalizations.of(context)!.localeName,
-                                  ),
-                              showSeparator: false,
-                            ),
-                            _makeLabel(
-                              localizations.interval,
-                              timeConversions[showTimeUnit.name].toString(),
-                            ),
-                            Center(
-                              child: SizedBox(
-                                height: 32,
-                                child: SegmentedButton<TimeUnit>(
-                                  selected: {showTimeUnit},
-                                  showSelectedIcon: false,
-                                  style: SegmentedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 5,
-                                      vertical: 10,
-                                    ),
-                                    alignment: Alignment(0, -.5),
-                                    visualDensity: VisualDensity.compact,
-                                    selectedBackgroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    selectedForegroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                  ),
-                                  onSelectionChanged:
-                                      (Set<TimeUnit> newSelection) {
-                                        setState(() {
-                                          showTimeUnit = newSelection.first;
-                                        });
-                                      },
-                                  segments: TimeUnit.values.map((unit) {
-                                    return ButtonSegment<TimeUnit>(
-                                      value: unit,
-                                      icon: null,
-                                      label: Text(
-                                        _getTimeUnitLabel(unit, localizations),
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    );
-                                  }).toList(),
+                      Row(
+                        spacing: 12,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.access_time,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _makeLabel(
+                                  localizations.finalDate,
+                                  _dateCalculator!.formattedDate,
                                 ),
-                              ),
+                                if (dateOperations.operationType ==
+                                    OperationType.add)
+                                  _makeLabel(
+                                    localizations.workingDays,
+                                    '${DateRangeCalculator.calculateDaysOptimized(_dateCalculator!.date, _dateCalculator!.calculatedDate)['diasUteis'].toString()} *',
+                                  ),
+                                if (dateOperations.operationType ==
+                                    OperationType.subtract)
+                                  _makeLabel(
+                                    localizations.workingDays,
+                                    '${DateRangeCalculator.calculateDaysOptimized(_dateCalculator!.calculatedDate, _dateCalculator!.date)['diasUteis'].toString()} *',
+                                  ),
+                                _makeLabel(
+                                  null,
+                                  '* ${localizations.notConsiderHolidays}',
+                                ),
+                                if (dateOperations.operationType ==
+                                    OperationType.add)
+                                  _makeLabel(
+                                    localizations.weekends,
+                                    DateRangeCalculator.calculateDaysOptimized(
+                                      _dateCalculator!.date,
+                                      _dateCalculator!.calculatedDate,
+                                    )['finsDeSemana'].toString(),
+                                  ),
+                                if (dateOperations.operationType ==
+                                    OperationType.subtract)
+                                  _makeLabel(
+                                    localizations.weekends,
+                                    DateRangeCalculator.calculateDaysOptimized(
+                                      _dateCalculator!.calculatedDate,
+                                      _dateCalculator!.date,
+                                    )['finsDeSemana'].toString(),
+                                  ),
+                                _makeLabel(
+                                  dateOperations.operationType.symbol,
+                                  ref
+                                      .read(dateOperationsProvider.notifier)
+                                      .formatDurationToString(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.localeName,
+                                      ),
+                                  showSeparator: false,
+                                ),
+                                _makeLabel(
+                                  localizations.interval,
+                                  timeConversions[showTimeUnit.name].toString(),
+                                ),
+                                Center(
+                                  child: SizedBox(
+                                    height: 32,
+                                    child: SegmentedButton<TimeUnit>(
+                                      selected: {showTimeUnit},
+                                      showSelectedIcon: false,
+                                      style: SegmentedButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                          vertical: 10,
+                                        ),
+                                        alignment: Alignment(0, -.5),
+                                        visualDensity: VisualDensity.compact,
+                                        selectedBackgroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        selectedForegroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimary,
+                                      ),
+                                      onSelectionChanged:
+                                          (Set<TimeUnit> newSelection) {
+                                            setState(() {
+                                              showTimeUnit = newSelection.first;
+                                            });
+                                          },
+                                      segments: TimeUnit.values.map((unit) {
+                                        return ButtonSegment<TimeUnit>(
+                                          value: unit,
+                                          icon: null,
+                                          label: Text(
+                                            _getTimeUnitLabel(
+                                              unit,
+                                              localizations,
+                                            ),
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
+                      ),
+                      CheckHolidaysButton(
+                        startDate: _dateCalculator!.date,
+                        endDate: _dateCalculator!.calculatedDate,
                       ),
                     ],
                   ),
