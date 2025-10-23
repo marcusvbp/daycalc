@@ -250,4 +250,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String totalHolidaysInfo(int total) =>
       'Showing $total national and school holidays';
+
+  @override
+  String get checkHolidaysButton => 'Check holidays';
+
+  @override
+  String get outOfRangeError => 'Dates out of range';
+
+  @override
+  String get invalidDateRangeError => 'The dates provided cannot:';
+
+  @override
+  String get cannotBeBefore2020 => '- Be before 01/01/2020;';
+
+  @override
+  String cannotBeAfterNow(String maxDate) => '- Be after $maxDate;';
+
+  @override
+  String cannotBeInterval(String days) =>
+      '- Have an interval greater than $days days.';
+
+  @override
+  String intervalInfo(String from, String to) =>
+      'Showing holidays between $from and $to.';
+
+  @override
+  String get continueQuestion => 'Do you want to continue?';
+
+  @override
+  String get confirmLabel => 'Confirm';
 }

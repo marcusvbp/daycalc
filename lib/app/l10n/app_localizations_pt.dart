@@ -250,4 +250,33 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String totalHolidaysInfo(int total) =>
       'Exibindo $total feriados nacionais e escolares';
+
+  @override
+  String get checkHolidaysButton => 'Ver feriados no Período';
+
+  @override
+  String get outOfRangeError => 'Datas fora do intervalo';
+
+  @override
+  String get invalidDateRangeError => 'As datas informadas não podem:';
+
+  @override
+  String get cannotBeBefore2020 => '- Serem anteriores a 01/01/2020;';
+
+  @override
+  String cannotBeAfterNow(String maxDate) => '- Serem maiores que $maxDate;';
+
+  @override
+  String cannotBeInterval(String days) =>
+      '- Ter um intervalo maior que $days dias.';
+
+  @override
+  String intervalInfo(String from, String to) =>
+      'Serão mostrados os feriados entre $from e $to.';
+
+  @override
+  String get continueQuestion => 'Deseja continuar?';
+
+  @override
+  String get confirmLabel => 'Confirmar';
 }

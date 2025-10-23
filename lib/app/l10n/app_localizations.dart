@@ -384,6 +384,24 @@ abstract class AppLocalizations {
   String get dateIntervalInfo;
 
   String totalHolidaysInfo(int total);
+
+  String get checkHolidaysButton;
+
+  String get outOfRangeError;
+
+  String get invalidDateRangeError;
+
+  String get cannotBeBefore2020;
+
+  String cannotBeAfterNow(String maxDate);
+
+  String cannotBeInterval(String days);
+
+  String intervalInfo(String from, String to);
+
+  String get continueQuestion;
+
+  String get confirmLabel;
 }
 
 class _AppLocalizationsDelegate
