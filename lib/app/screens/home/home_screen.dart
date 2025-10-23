@@ -52,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: const Icon(Icons.settings),
             tooltip: localizations.settings,
             onPressed: () {
-              context.pushNamed('settings');
+              context.push('/settings');
             },
           ),
         ],
