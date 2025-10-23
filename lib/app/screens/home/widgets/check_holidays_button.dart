@@ -69,37 +69,44 @@ class CheckHolidaysButton extends ConsumerWidget {
                 await showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Datas fora do intervalo'),
+                    title: Text(localizations.outOfRangeError),
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('As datas informadas não podem:'),
+                        Text(localizations.invalidDateRangeError),
                         SizedBox(height: 5),
-                        Text('- Serem anteriores a 01/01/2020;'),
+                        Text(localizations.cannotBeBefore2020),
                         Text(
-                          '- Serem maiores que ${getLocalizedDate(DateTime(DateTime.now().year, 12, 31), localizations.localeName)};',
+                          localizations.cannotBeAfterNow(
+                            getLocalizedDate(
+                              DateTime(DateTime.now().year, 12, 31),
+                              localizations.localeName,
+                            ),
+                          ),
                         ),
                         Text(
-                          '- Ter um intervalo maior que $openHolidaysMaxInterval dias.',
+                          localizations.cannotBeInterval(
+                            openHolidaysMaxInterval.toString(),
+                          ),
                         ),
                         SizedBox(height: 5),
                         Text(
-                          'Serão mostrados os feriados entre $validFromStr e $validToStr.',
+                          localizations.intervalInfo(validFromStr, validToStr),
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 10),
-                        Text('Deseja continuar?'),
+                        Text(localizations.continueQuestion),
                       ],
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(ctx).pop(false),
-                        child: const Text('Cancelar'),
+                        child: Text(localizations.cancel),
                       ),
                       TextButton(
                         onPressed: () => Navigator.of(ctx).pop(true),
-                        child: const Text('Confirmar'),
+                        child: Text(localizations.confirmLabel),
                       ),
                     ],
                   ),
@@ -116,7 +123,7 @@ class CheckHolidaysButton extends ConsumerWidget {
           ref.read(holidaysCollectionProvider.notifier).refresh();
           ref.read(homeTabsProvider.notifier).set(2);
         },
-        child: const Text('Ver feriados no Período'),
+        child: Text(localizations.checkHolidaysButton),
       ),
     );
   }
