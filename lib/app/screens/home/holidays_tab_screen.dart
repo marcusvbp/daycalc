@@ -1,3 +1,4 @@
+import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/providers/holidays_collection_provider.dart';
 import 'package:daycalc/app/providers/holidays_params_provider.dart';
 import 'package:daycalc/app/screens/home/widgets/holidays_list.dart';
@@ -19,6 +20,7 @@ class _HolidaysTabScreenState extends ConsumerState<HolidaysTabScreen> {
     // final holidaysAsync = ref.watch(holidaysFetchProvider);
     final holidaysCollectionAsync = ref.watch(holidaysCollectionProvider);
     final holidaysParams = ref.watch(holidaysParamsProvider);
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -34,12 +36,23 @@ class _HolidaysTabScreenState extends ConsumerState<HolidaysTabScreen> {
                     collection.allHolidaysSorted.isEmpty) {
                   return const SizedBox.shrink();
                 }
-                return HolidaysList(
-                  holidays: collection.allHolidaysSorted,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  validFrom: holidaysParams.validFrom,
-                  validTo: holidaysParams.validTo,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      localizations.totalHolidaysInfo(
+                        collection.allHolidaysSorted.length,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    HolidaysList(
+                      holidays: collection.allHolidaysSorted,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      validFrom: holidaysParams.validFrom,
+                      validTo: holidaysParams.validTo,
+                    ),
+                  ],
                 );
               },
               loading: () => const Padding(

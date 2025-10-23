@@ -382,6 +382,8 @@ abstract class AppLocalizations {
   String validFrom(int year);
 
   String get dateIntervalInfo;
+
+  String totalHolidaysInfo(int total);
 }
 
 class _AppLocalizationsDelegate

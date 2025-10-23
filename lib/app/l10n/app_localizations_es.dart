@@ -247,4 +247,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get dateIntervalInfo =>
       'El intervalo entre las fechas no puede ser superior a 3 años.';
+
+  @override
+  String totalHolidaysInfo(int total) =>
+      'Mostrando $total de días festivos nacionales y escolares';
 }
