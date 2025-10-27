@@ -44,6 +44,8 @@ dependencies:
   calendar_date_picker2: ^2.0.1
   google_mobile_ads: ^6.0.0
   icons_launcher: ^3.0.2
+  dio: ^5.9.0
+  share_plus: ^12.0.1
 
 dev_dependencies:
   flutter_test:
