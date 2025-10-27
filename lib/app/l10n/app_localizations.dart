@@ -410,6 +410,8 @@ abstract class AppLocalizations {
   String translateHolidayFragment(String fragment);
 
   String get school;
+
+  String get shareMessageSuccess;
 }
 
 class _AppLocalizationsDelegate

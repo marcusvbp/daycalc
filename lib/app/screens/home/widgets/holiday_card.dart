@@ -61,7 +61,7 @@ $dateLabel \n${holiday.type} ${holiday.regionalScope != null ? ' - ${holiday.reg
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Compartilhado com sucesso',
+                                localizations.shareMessageSuccess,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               duration: const Duration(seconds: 2),

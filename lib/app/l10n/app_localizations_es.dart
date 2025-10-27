@@ -309,4 +309,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get school => 'Escuela';
+
+  @override
+  String get shareMessageSuccess => 'Compartido con éxito';
 }
