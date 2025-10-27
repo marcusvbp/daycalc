@@ -2,16 +2,13 @@ import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/modules/open_holidays/models/public_holiday.dart';
 import 'package:daycalc/app/utils/format_localized_date.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HolidayCard extends StatelessWidget {
   final PublicHoliday holiday;
   final VoidCallback? onTap;
 
-  const HolidayCard({
-    super.key,
-    required this.holiday,
-    this.onTap,
-  });
+  const HolidayCard({super.key, required this.holiday, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +34,7 @@ class HolidayCard extends StatelessWidget {
             spacing: 8,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Text(
@@ -46,11 +44,35 @@ class HolidayCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (holiday.nationwide)
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Icon(Icons.public, size: 18),
-                    ),
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () async {
+                      final res = await SharePlus.instance.share(
+                        ShareParams(
+                          text:
+                              '''
+${holiday.name.first.text}
+${holiday.type == 'School' ? localizations.holidayTypeSchool : localizations.holidayTypeNormal}
+$dateLabel \n${holiday.type} ${holiday.regionalScope != null ? ' - ${holiday.regionalScope}' : ''}''',
+                        ),
+                      );
+                      if (res.status == ShareResultStatus.success) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Compartilhado com sucesso',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              duration: const Duration(seconds: 2),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    icon: Icon(Icons.share, size: 16),
+                  ),
                 ],
               ),
               if (dateLabel.isNotEmpty)
@@ -66,29 +88,54 @@ class HolidayCard extends StatelessWidget {
                     ),
                   ],
                 ),
+              if (holiday.type == 'School')
+                Row(
+                  children: [
+                    const Icon(Icons.school, size: 16),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        localizations.school,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
                 children: [
                   Chip(
-                    label: Text(holiday.type),
+                    label: Text(
+                      localizations.translateHolidayFragment(holiday.type),
+                    ),
                     visualDensity: VisualDensity.compact,
                   ),
                   if (holiday.regionalScope != null &&
                       holiday.regionalScope!.isNotEmpty)
                     Chip(
-                      label: Text(holiday.regionalScope!),
+                      label: Text(
+                        localizations.translateHolidayFragment(
+                          holiday.regionalScope!,
+                        ),
+                      ),
                       visualDensity: VisualDensity.compact,
                     ),
                   if (holiday.temporalScope != null &&
                       holiday.temporalScope!.isNotEmpty)
                     Chip(
-                      label: Text(holiday.temporalScope!),
+                      label: Text(
+                        localizations.translateHolidayFragment(
+                          holiday.temporalScope!,
+                        ),
+                      ),
                       visualDensity: VisualDensity.compact,
                     ),
                   for (final s in holiday.subdivisions)
                     Chip(
-                      label: Text(s.shortName),
+                      label: Text(
+                        localizations.translateHolidayFragment(s.shortName),
+                      ),
                       visualDensity: VisualDensity.compact,
                     ),
                 ],
