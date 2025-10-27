@@ -3,9 +3,11 @@ import 'package:daycalc/app/config/theme.dart';
 import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/providers/locale_provider.dart';
 import 'package:daycalc/app/providers/theme_provider.dart';
+import 'package:daycalc/app/services/app_settings_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,20 +15,34 @@ void main() async {
   // Garante que os widgets sejam inicializados
   WidgetsFlutterBinding.ensureInitialized();
 
-  await MobileAds.instance.initialize();
+  try {
+    await MobileAds.instance.initialize();
+  } catch (_) {}
 
   // Inicializa o SharedPreferences
   await SharedPreferences.getInstance();
+  // obtém as configurações do App
+  final appSettingsStorageService = AppSettingsStorageService();
+  final appSettings = await appSettingsStorageService.getSettings();
 
-  runApp(const ProviderScope(child: MyApp()));
+  // cria o router
+  final router = buildRouter(showSettingsFirst: appSettings.showSettingsFirst);
+
+  runApp(ProviderScope(child: MyApp(router: router)));
 }
 
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+class MyApp extends ConsumerStatefulWidget {
+  final GoRouter router;
+  const MyApp({super.key, required this.router});
 
+  @override
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final themeModeAsync = ref.watch(themeModeProvider);
     final localeAsync = ref.watch(localeProvider);
 
@@ -40,7 +56,7 @@ class MyApp extends ConsumerWidget {
               theme: lightTheme,
               darkTheme: darkTheme,
               themeMode: _getThemeMode(themeMode),
-              routerConfig: router,
+              routerConfig: widget.router,
               locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: const [
@@ -55,8 +71,23 @@ class MyApp extends ConsumerWidget {
             home: Scaffold(body: Center(child: CircularProgressIndicator())),
           ),
           error: (error, stackTrace) => MaterialApp(
-            home: Scaffold(
-              body: Center(child: Text('Erro ao carregar idioma: $error')),
+            debugShowCheckedModeBanner: false,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: Builder(
+              builder: (context) {
+                final localizations = AppLocalizations.of(context)!;
+                return Scaffold(
+                  body: Center(
+                    child: Text(localizations.errorMessage(error.toString())),
+                  ),
+                );
+              },
             ),
           ),
         );
@@ -65,8 +96,23 @@ class MyApp extends ConsumerWidget {
         home: Scaffold(body: Center(child: CircularProgressIndicator())),
       ),
       error: (error, stackTrace) => MaterialApp(
-        home: Scaffold(
-          body: Center(child: Text('Erro ao carregar tema: $error')),
+        debugShowCheckedModeBanner: false,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: Builder(
+          builder: (context) {
+            final localizations = AppLocalizations.of(context)!;
+            return Scaffold(
+              body: Center(
+                child: Text(localizations.errorMessage(error.toString())),
+              ),
+            );
+          },
         ),
       ),
     );

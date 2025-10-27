@@ -4,86 +4,22 @@ import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/models/date_operation_record.dart';
 import 'package:daycalc/app/providers/date_operations_history_provider.dart';
 import 'package:daycalc/app/providers/date_operations_provider.dart';
+import 'package:daycalc/app/providers/home_tabs_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
+import 'package:daycalc/app/screens/home/widgets/native_banner.dart';
+import 'package:daycalc/app/widgets/rebuild_loop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 
 class HistoryTabScreen extends ConsumerStatefulWidget {
-  final VoidCallback? onNavigateToHomeTab;
-
-  const HistoryTabScreen({super.key, this.onNavigateToHomeTab});
+  const HistoryTabScreen({super.key});
 
   @override
   ConsumerState<HistoryTabScreen> createState() => _HistoryTabScreenState();
 }
 
 class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
-  NativeAd? _nativeAd;
-  bool _nativeAdIsLoaded = false;
-
-  void loadAd() {
-    _nativeAd = NativeAd(
-      adUnitId: admobHistoricoId,
-      listener: NativeAdListener(
-        onAdLoaded: (ad) {
-          debugPrint('$NativeAd loaded.');
-          setState(() {
-            _nativeAdIsLoaded = true;
-          });
-        },
-        onAdFailedToLoad: (ad, error) {
-          // Dispose the ad here to free resources.
-          debugPrint('$NativeAd failed to load: $error');
-          ad.dispose();
-        },
-      ),
-      request: const AdRequest(),
-      // Styling
-      nativeTemplateStyle: NativeTemplateStyle(
-        // Required: Choose a template.
-        templateType: TemplateType.small,
-        // Optional: Customize the ad's style.
-        mainBackgroundColor: Colors.white,
-        cornerRadius: 10.0,
-        callToActionTextStyle: NativeTemplateTextStyle(
-          textColor: Colors.white,
-          backgroundColor: Colors.deepPurple,
-          style: NativeTemplateFontStyle.bold,
-          size: 16.0,
-        ),
-        primaryTextStyle: NativeTemplateTextStyle(
-          textColor: Colors.deepPurple,
-          style: NativeTemplateFontStyle.bold,
-          size: 16.0,
-        ),
-        secondaryTextStyle: NativeTemplateTextStyle(
-          textColor: Colors.blueGrey,
-          style: NativeTemplateFontStyle.bold,
-          size: 14.0,
-        ),
-        tertiaryTextStyle: NativeTemplateTextStyle(
-          textColor: Colors.grey,
-          style: NativeTemplateFontStyle.normal,
-          size: 14.0,
-        ),
-      ),
-    )..load();
-  }
-
-  @override
-  void initState() {
-    loadAd();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _nativeAd?.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final historyAsync = ref.watch(dateOperationsHistoryProvider);
@@ -132,9 +68,6 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
         loading: () => null,
         error: (error, stackTrace) => null,
       ),
-      bottomNavigationBar: _nativeAdIsLoaded
-          ? SizedBox(width: 320, height: 90, child: AdWidget(ad: _nativeAd!))
-          : null,
     );
   }
 
@@ -174,18 +107,27 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
     final sortedHistory = List<DateOperationRecord>.from(history)
       ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: sortedHistory.length,
-      itemBuilder: (context, index) {
-        final record = sortedHistory[index];
-        return Padding(
-          padding: index == sortedHistory.length - 1
-              ? const EdgeInsets.only(bottom: 74)
-              : EdgeInsets.zero,
-          child: _buildHistoryItem(context, record, index),
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RebuildLoop(child: NativeBanner(adUnitId: admobHistoricoId)),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: sortedHistory.length,
+            itemBuilder: (context, index) {
+              final record = sortedHistory[index];
+              return Padding(
+                padding: index == sortedHistory.length - 1
+                    ? const EdgeInsets.only(bottom: 74)
+                    : EdgeInsets.zero,
+                child: _buildHistoryItem(context, record, index),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -217,7 +159,7 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
           dateOpsNotifier.setIsHistoryRestored(true);
 
           // 3. Navegar para a tab home
-          widget.onNavigateToHomeTab?.call();
+          ref.read(homeTabsProvider.notifier).set(0);
         },
         leading: CircleAvatar(
           backgroundColor: isAddOperation ? Colors.green : Colors.red,
@@ -259,27 +201,26 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
   }
 
   void _showClearHistoryDialog(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Limpar Histórico'),
-        content: const Text(
-          'Tem certeza que deseja limpar todo o histórico de operações? Esta ação não pode ser desfeita.',
-        ),
+        title: Text(localizations.clearHistory),
+        content: Text(localizations.clearHistoryConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(localizations.cancel),
           ),
           TextButton(
             onPressed: () {
               ref.read(dateOperationsHistoryProvider.notifier).clearHistory();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Histórico limpo com sucesso')),
+                SnackBar(content: Text(localizations.clearHistorySuccess)),
               );
             },
-            child: const Text('Limpar'),
+            child: Text(localizations.clearHistory),
           ),
         ],
       ),
@@ -299,7 +240,7 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(localizations.cancel),
           ),
           TextButton(
             onPressed: () {

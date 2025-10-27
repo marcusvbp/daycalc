@@ -341,6 +341,77 @@ abstract class AppLocalizations {
   String get weekends;
 
   String get notConsiderHolidays;
+
+  /// Localized language names for selection.
+  String get english;
+
+  String get spanish;
+
+  String get portuguese;
+
+  /// First settings screen title.
+  String get settingsWelcomeTitle;
+
+  /// First settings screen descriptive hint.
+  String get settingsSetupHint;
+
+  /// Generic error message prefix with details.
+  String errorMessage(String error);
+
+  String get continueLabel;
+
+  String get cancel;
+  String get dateRange;
+  String get initialDate;
+  String get countryNotSelected;
+  String get changeCountry;
+  String get loadingCountry;
+  String errorLoadingCountries(String error);
+  String errorLoadingCountry(String error);
+
+  String get country;
+
+  String get selectCountry;
+
+  String get countryInfo;
+
+  String get holidays;
+
+  String get holidaysApiError;
+
+  String validFrom(int year);
+
+  String get dateIntervalInfo;
+
+  String totalHolidaysInfo(int total);
+
+  String get checkHolidaysButton;
+
+  String get outOfRangeError;
+
+  String get invalidDateRangeError;
+
+  String get cannotBeBefore2020;
+
+  String cannotBeAfterNow(String maxDate);
+
+  String cannotBeInterval(String days);
+
+  String intervalInfo(String from, String to);
+
+  String get continueQuestion;
+
+  String get confirmLabel;
+
+  String get holidayTypeSchool;
+
+  String get holidayTypeNormal;
+
+  String translateHolidayFragment(String fragment);
+
+  String get school;
+
+  String get shareMessageSuccess;
 }
 
 class _AppLocalizationsDelegate

@@ -171,4 +171,145 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notConsiderHolidays => 'No considera feriados';
+
+  @override
+  String get english => 'Inglés';
+
+  @override
+  String get spanish => 'Español';
+
+  @override
+  String get portuguese => 'Portugués';
+
+  @override
+  String get settingsWelcomeTitle => '¡Gracias por elegir DayCalc!';
+
+  @override
+  String get settingsSetupHint =>
+      'Antes de continuar, configure las siguientes opciones:';
+
+  @override
+  String errorMessage(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get continueLabel => 'Continuar';
+
+  @override
+  String get country => 'País';
+
+  @override
+  String get selectCountry => 'Seleccione su país';
+
+  @override
+  String get countryInfo =>
+      'Utilizaremos esta información para obtener la lista de feriados nacionales y escolares.';
+
+  @override
+  String get holidays => 'Feriados';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get dateRange => 'Intervalo de fechas';
+
+  @override
+  String get initialDate => 'Fecha inicial';
+
+  @override
+  String get countryNotSelected => 'País no seleccionado';
+
+  @override
+  String get changeCountry => 'Cambiar país';
+
+  @override
+  String get loadingCountry => 'Cargando país...';
+
+  @override
+  String errorLoadingCountries(String error) {
+    return 'Error al cargar países: $error';
+  }
+
+  @override
+  String errorLoadingCountry(String error) {
+    return 'Error al cargar país: $error';
+  }
+
+  @override
+  String get holidaysApiError =>
+      'Error al intentar obtener los datos de Feriados';
+
+  @override
+  String validFrom(int year) => 'Adicione datas entre 2020 e ${year}.';
+
+  @override
+  String get dateIntervalInfo =>
+      'El intervalo entre las fechas no puede ser superior a 3 años.';
+
+  @override
+  String totalHolidaysInfo(int total) =>
+      'Mostrando $total de días festivos nacionales y escolares';
+
+  @override
+  String get checkHolidaysButton => 'Ver feriados en el período';
+
+  @override
+  String get outOfRangeError => 'Días fuera del rango';
+
+  @override
+  String get invalidDateRangeError => 'Las fechas informadas no pueden:';
+
+  @override
+  String get cannotBeBefore2020 => '- Ser anterior al 01/01/2020;';
+
+  @override
+  String cannotBeAfterNow(String maxDate) => '- Sea mayor que $maxDate;';
+
+  @override
+  String cannotBeInterval(String days) =>
+      '- Tener un intervalo mayor a $days días.';
+
+  @override
+  String intervalInfo(String from, String to) =>
+      'Se mostrarán los días festivos entre $from y $to.';
+
+  @override
+  String get continueQuestion => '¿Quieres continuar?';
+
+  @override
+  String get confirmLabel => 'Confirmar';
+
+  @override
+  String get holidayTypeSchool => 'Vacaciones escolares';
+
+  @override
+  String get holidayTypeNormal => 'Día festivo';
+
+  @override
+  String translateHolidayFragment(String fragment) {
+    switch (fragment) {
+      case 'Public':
+        return 'Público';
+      case 'National':
+        return 'Nacional';
+      case 'FullDay':
+        return 'Todo el Día';
+      case 'HalfDay':
+        return 'Medio Día';
+      case 'Optional':
+        return 'Opcional';
+      case 'School':
+        return 'Escuela';
+      default:
+        return fragment;
+    }
+  }
+
+  @override
+  String get school => 'Escuela';
+
+  @override
+  String get shareMessageSuccess => 'Compartido con éxito';
 }

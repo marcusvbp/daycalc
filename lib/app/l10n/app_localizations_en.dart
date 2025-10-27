@@ -171,4 +171,144 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notConsiderHolidays => 'Not consider holidays';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get spanish => 'Spanish';
+
+  @override
+  String get portuguese => 'Portuguese';
+
+  @override
+  String get settingsWelcomeTitle => 'Thank you for choosing DayCalc!';
+
+  @override
+  String get settingsSetupHint =>
+      'Before proceeding, please configure the following options:';
+
+  @override
+  String errorMessage(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get continueLabel => 'Continue';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get selectCountry => 'Select country';
+
+  @override
+  String get countryInfo =>
+      'We will use this information to get the list of national and school holidays.';
+
+  @override
+  String get holidays => 'Holidays';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get dateRange => 'Date range';
+
+  @override
+  String get initialDate => 'Initial date';
+
+  @override
+  String get countryNotSelected => 'Country not selected';
+
+  @override
+  String get changeCountry => 'Change country';
+
+  @override
+  String get loadingCountry => 'Loading country...';
+
+  @override
+  String errorLoadingCountries(String error) {
+    return 'Error loading countries: $error';
+  }
+
+  @override
+  String errorLoadingCountry(String error) {
+    return 'Error loading country: $error';
+  }
+
+  @override
+  String get holidaysApiError => 'Error loading holidays';
+
+  @override
+  String validFrom(int year) => 'Add dates between 2020 and ${year}.';
+
+  @override
+  String get dateIntervalInfo =>
+      'The interval between the dates cannot be greater than 3 years.';
+
+  @override
+  String totalHolidaysInfo(int total) =>
+      'Showing $total national and school holidays';
+
+  @override
+  String get checkHolidaysButton => 'Check holidays';
+
+  @override
+  String get outOfRangeError => 'Dates out of range';
+
+  @override
+  String get invalidDateRangeError => 'The dates provided cannot:';
+
+  @override
+  String get cannotBeBefore2020 => '- Be before 01/01/2020;';
+
+  @override
+  String cannotBeAfterNow(String maxDate) => '- Be after $maxDate;';
+
+  @override
+  String cannotBeInterval(String days) =>
+      '- Have an interval greater than $days days.';
+
+  @override
+  String intervalInfo(String from, String to) =>
+      'Showing holidays between $from and $to.';
+
+  @override
+  String get continueQuestion => 'Do you want to continue?';
+
+  @override
+  String get confirmLabel => 'Confirm';
+
+  @override
+  String get holidayTypeSchool => 'School Holiday';
+
+  @override
+  String get holidayTypeNormal => 'Holiday';
+
+  @override
+  String translateHolidayFragment(String fragment) {
+    switch (fragment) {
+      case 'Public':
+        return 'Public';
+      case 'National':
+        return 'National';
+      case 'FullDay':
+        return 'Full Day';
+      case 'HalfDay':
+        return 'Half Day';
+      case 'Optional':
+        return 'Optional';
+      case 'School':
+        return 'School';
+      default:
+        return fragment;
+    }
+  }
+
+  @override
+  String get school => 'School';
+
+  @override
+  String get shareMessageSuccess => 'Shared successfully';
 }
