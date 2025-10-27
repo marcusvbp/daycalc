@@ -402,6 +402,14 @@ abstract class AppLocalizations {
   String get continueQuestion;
 
   String get confirmLabel;
+
+  String get holidayTypeSchool;
+
+  String get holidayTypeNormal;
+
+  String translateHolidayFragment(String fragment);
+
+  String get school;
 }
 
 class _AppLocalizationsDelegate

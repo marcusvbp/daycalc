@@ -279,4 +279,33 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get confirmLabel => 'Confirmar';
+
+  @override
+  String get holidayTypeSchool => 'Feriado Escolar';
+
+  @override
+  String get holidayTypeNormal => 'Feriado';
+
+  @override
+  String translateHolidayFragment(String fragment) {
+    switch (fragment) {
+      case 'Public':
+        return 'Público';
+      case 'National':
+        return 'Nacional';
+      case 'FullDay':
+        return 'Todo o Dia';
+      case 'HalfDay':
+        return 'Meio Dia';
+      case 'Optional':
+        return 'Opcional';
+      case 'School':
+        return 'Escola';
+      default:
+        return fragment;
+    }
+  }
+
+  @override
+  String get school => 'Escola';
 }
