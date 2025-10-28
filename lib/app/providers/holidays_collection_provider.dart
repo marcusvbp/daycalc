@@ -1,4 +1,3 @@
-import 'package:daycalc/app/config/constants.dart';
 import 'package:daycalc/app/models/holidays_collection.dart';
 import 'package:daycalc/app/modules/open_holidays/services/public_holidays.dart';
 import 'package:daycalc/app/modules/open_holidays/services/school_holidays.dart';
@@ -45,13 +44,13 @@ class HolidaysCollectionNotifier extends _$HolidaysCollectionNotifier {
       return stored;
     }
 
-    final finalDate = DateTime(DateTime.now().year, 12, 31);
-    final initialDate = finalDate.subtract(
-      Duration(days: openHolidaysMaxInterval),
-    );
+    final validFrom = holidaysParams.validFrom;
+    final validTo = holidaysParams.validTo;
 
-    final validFrom = holidaysParams.validFrom ?? initialDate;
-    final validTo = holidaysParams.validTo ?? finalDate;
+    if (validFrom == null || validTo == null) {
+      return null;
+    }
+
     final countryIsoCode = country?.isoCode;
 
     final languageIsoCode = currentLocale.languageCode.toUpperCase();
