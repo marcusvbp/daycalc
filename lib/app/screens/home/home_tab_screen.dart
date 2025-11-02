@@ -12,6 +12,7 @@ import 'package:daycalc/app/screens/home/widgets/check_holidays_button.dart';
 import 'package:daycalc/app/screens/home/widgets/native_banner.dart';
 import 'package:daycalc/app/utils/format_localized_date.dart';
 import 'package:daycalc/app/widgets/rebuild_loop.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -152,7 +153,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     return Scaffold(
       body: Column(
         children: [
-          RebuildLoop(child: NativeBanner(adUnitId: admobHomeId)),
+          if (!kIsWeb) RebuildLoop(child: NativeBanner(adUnitId: admobHomeId)),
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
@@ -538,6 +539,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
                                 ),
                               ],
                             ),
+                            if (kIsWeb) SizedBox(height: 10),
                             CheckHolidaysButton(
                               startDate: _dateCalculator!.date,
                               endDate: _dateCalculator!.calculatedDate,

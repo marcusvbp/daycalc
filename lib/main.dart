@@ -4,6 +4,7 @@ import 'package:daycalc/app/l10n/app_localizations.dart';
 import 'package:daycalc/app/providers/locale_provider.dart';
 import 'package:daycalc/app/providers/theme_provider.dart';
 import 'package:daycalc/app/services/app_settings_storage_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,9 +16,11 @@ void main() async {
   // Garante que os widgets sejam inicializados
   WidgetsFlutterBinding.ensureInitialized();
 
-  try {
-    await MobileAds.instance.initialize();
-  } catch (_) {}
+  if (!kIsWeb) {
+    try {
+      await MobileAds.instance.initialize();
+    } catch (_) {}
+  }
 
   // Inicializa o SharedPreferences
   await SharedPreferences.getInstance();

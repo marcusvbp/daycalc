@@ -6,6 +6,7 @@ import 'package:daycalc/app/screens/home/widgets/holidays_list.dart';
 import 'package:daycalc/app/screens/home/widgets/holidays_parameters.dart';
 import 'package:daycalc/app/screens/home/widgets/native_banner.dart';
 import 'package:daycalc/app/widgets/rebuild_loop.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,7 +31,8 @@ class _HolidaysTabScreenState extends ConsumerState<HolidaysTabScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          RebuildLoop(child: NativeBanner(adUnitId: admobFeriadoId)),
+          if (!kIsWeb)
+            RebuildLoop(child: NativeBanner(adUnitId: admobFeriadoId)),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),

@@ -8,6 +8,7 @@ import 'package:daycalc/app/providers/home_tabs_provider.dart';
 import 'package:daycalc/app/providers/user_date_provider.dart';
 import 'package:daycalc/app/screens/home/widgets/native_banner.dart';
 import 'package:daycalc/app/widgets/rebuild_loop.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -111,7 +112,8 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        RebuildLoop(child: NativeBanner(adUnitId: admobHistoricoId)),
+        if (!kIsWeb)
+          RebuildLoop(child: NativeBanner(adUnitId: admobHistoricoId)),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
