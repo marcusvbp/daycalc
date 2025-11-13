@@ -80,9 +80,9 @@ class _NativeBannerState extends State<NativeBanner> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           minWidth: 320, // minimum recommended width
-          minHeight: 90, // minimum recommended height
+          minHeight: 120, // minimum recommended height
           maxWidth: 400,
-          maxHeight: 90,
+          maxHeight: 120,
         ),
         child: _nativeAdIsLoaded
             ? AdWidget(ad: _nativeAd!)
