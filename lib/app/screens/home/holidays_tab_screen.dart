@@ -30,7 +30,8 @@ class _HolidaysTabScreenState extends ConsumerState<HolidaysTabScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          RebuildLoop(child: NativeBanner(adUnitId: admobFeriadoId)),
+          if (!hideAdmob)
+            RebuildLoop(child: NativeBanner(adUnitId: admobFeriadoId)),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),

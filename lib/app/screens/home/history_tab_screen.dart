@@ -111,7 +111,8 @@ class _HistoryTabScreenState extends ConsumerState<HistoryTabScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        RebuildLoop(child: NativeBanner(adUnitId: admobHistoricoId)),
+        if (!hideAdmob)
+          RebuildLoop(child: NativeBanner(adUnitId: admobHistoricoId)),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
