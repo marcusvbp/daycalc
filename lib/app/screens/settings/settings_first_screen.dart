@@ -12,38 +12,37 @@ class SettingsFirstScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 16,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Text(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 16,
+            children: [
+              Text(
                 localizations.settingsWelcomeTitle,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
-            ),
-            Text(
-              localizations.settingsSetupHint,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            SettingsContent(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  ref
-                      .read(appSettingsProvider.notifier)
-                      .setValues(showSettingsFirst: false);
-                  context.pushReplacement('/');
-                },
-                child: Text(localizations.continueLabel),
+              Text(
+                localizations.settingsSetupHint,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-            ),
-          ],
+              SettingsContent(),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    ref
+                        .read(appSettingsProvider.notifier)
+                        .setValues(showSettingsFirst: false);
+                    context.pushReplacement('/');
+                  },
+                  child: Text(localizations.continueLabel),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
