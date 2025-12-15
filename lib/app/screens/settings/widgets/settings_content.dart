@@ -63,6 +63,10 @@ class SettingsContent extends ConsumerWidget {
                           title: Text(localizations.portuguese),
                           value: AppLocale.pt,
                         ),
+                        RadioListTile<AppLocale>(
+                          title: Text(localizations.hindi),
+                          value: AppLocale.hi,
+                        ),
                       ],
                     ),
                   ),
@@ -205,6 +209,8 @@ class SettingsContent extends ConsumerWidget {
       return AppLocale.en;
     } else if (locale.languageCode == 'es') {
       return AppLocale.es;
+    } else if (locale.languageCode == 'hi') {
+      return AppLocale.hi;
     } else {
       return AppLocale.pt;
     }

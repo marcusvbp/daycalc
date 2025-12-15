@@ -182,6 +182,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get portuguese => 'Portuguese';
 
   @override
+  String get hindi => 'Hindi';
+
+  @override
   String get settingsWelcomeTitle => 'Thank you for choosing DayCalc!';
 
   @override

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_hi.dart';
 import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
@@ -98,6 +99,7 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('es'),
     Locale('pt'),
+    Locale('hi'),
   ];
 
   /// No description provided for @appTitle.
@@ -349,6 +351,8 @@ abstract class AppLocalizations {
 
   String get portuguese;
 
+  String get hindi;
+
   /// First settings screen title.
   String get settingsWelcomeTitle;
 
@@ -425,7 +429,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'es', 'pt'].contains(locale.languageCode);
+      <String>['en', 'es', 'pt', 'hi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -440,6 +444,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEs();
     case 'pt':
       return AppLocalizationsPt();
+    case 'hi':
+      return AppLocalizationsHi();
   }
 
   throw FlutterError(

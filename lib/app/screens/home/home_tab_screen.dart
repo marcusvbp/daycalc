@@ -152,7 +152,8 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
     return Scaffold(
       body: Column(
         children: [
-          RebuildLoop(child: NativeBanner(adUnitId: admobHomeId)),
+          if (!hideAdmob)
+            RebuildLoop(child: NativeBanner(adUnitId: admobHomeId)),
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
