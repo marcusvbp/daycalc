@@ -1,5 +1,7 @@
 import 'dart:io';
 
+const hideAdmob = bool.fromEnvironment('HIDE_ADMOB');
+
 const admobInterstitialAndroid = String.fromEnvironment(
   'ADMOB_INTERSTITIAL_ANDROID',
 );

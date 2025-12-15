@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum AppLocale { en, es, pt }
+enum AppLocale { en, es, pt, hi }
 
 class LocalePreferenceService {
   static const String _localeKey = 'app_locale';
@@ -37,6 +37,8 @@ class LocalePreferenceService {
         return const Locale('es');
       case AppLocale.pt:
         return const Locale('pt');
+      case AppLocale.hi:
+        return const Locale('hi');
     }
   }
 }
